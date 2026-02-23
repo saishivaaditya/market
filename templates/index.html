@@ -1,89 +1,590 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+
+<html data-theme="light" lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description"
-        content="MarketMind — AI-Powered Sales & Marketing Intelligence Platform. Generate campaigns, craft pitches, and qualify leads with advanced AI.">
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta
+        content="MarketMind — AI-Powered Sales &amp; Marketing Intelligence Platform. Generate campaigns, craft pitches, and qualify leads with advanced AI."
+        name="description" />
     <title>MarketMind — AI Marketing Suite</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/static/style.css">
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <link href="/static/style.css" rel="stylesheet" />
+    <script async="" defer="" src="https://accounts.google.com/gsi/client"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
-
-    <!-- ═══════════════════════ NAVIGATION ═══════════════════════ -->
-    <header class="navbar" id="navbar">
-        <div class="nav-container">
-            <a href="#home" class="nav-brand">
+    <div class="app-layout">
+        <aside class="app-sidebar">
+            <div class="sidebar-brand">
                 <i class="fas fa-chart-line"></i>
                 <span>MarketMind</span>
-            </a>
-            <div class="nav-search">
-                <i class="fas fa-search"></i>
-                <input type="text" id="searchBar" placeholder="Search features…" autocomplete="off">
-                <div class="search-results" id="searchResults"></div>
             </div>
-            <nav class="nav-links" id="navLinks">
-                <a href="#home">Home</a>
-                <a href="#dashboard">Dashboard</a>
-                <a href="#campaign">Campaign</a>
-                <a href="#pitch">Pitch</a>
-                <a href="#lead">Lead Score</a>
+            <div class="sidebar-user-summary"
+                style="padding: 1.5rem 1rem; text-align: center; border-bottom: 1px solid var(--card-border); margin-bottom: 1rem;">
+                <div
+                    style="width: 48px; height: 48px; border-radius: 50%; overflow: hidden; margin: 0 auto 0.8rem; background: var(--gradient); display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-user-circle" id="sidebarAvatarIcon" style="font-size: 2.5rem; color: #fff;"></i>
+                    <img id="sidebarAvatarImg" style="display:none; width:100%; height:100%; object-fit:cover;">
+                </div>
+                <div style="font-size: 0.85rem; font-weight: 600; color: var(--text);" id="sidebarUserName">Guest User
+                </div>
+            </div>
+            <nav class="sidebar-nav" id="sidebarNav">
+                <a class="sidebar-link active" data-view="view-home" href="#home">
+                    <i class="fas fa-home"></i> <span>Home</span>
+                </a>
+                <a class="sidebar-link" data-view="view-dashboard" href="#dashboard">
+                    <i class="fas fa-chart-pie"></i> <span>Dashboard</span>
+                </a>
+                <a class="sidebar-link" data-view="view-campaign" href="#campaign">
+                    <i class="fas fa-bullseye"></i> <span>Campaign Gen</span>
+                </a>
+                <a class="sidebar-link" data-view="view-pitch" href="#pitch">
+                    <i class="fas fa-handshake"></i> <span>Pitch Creator</span>
+                </a>
+                <a class="sidebar-link" data-view="view-lead" href="#lead">
+                    <i class="fas fa-chart-bar"></i> <span>Lead Qualifier</span>
+                </a>
+                <div class="sidebar-divider" style="height: 1px; background: var(--card-border); margin: 12px 16px;">
+                </div>
+                <a class="sidebar-link" data-view="view-settings" href="#settings">
+                    <i class="fas fa-user-cog"></i> <span>Profile & Settings</span>
+                </a>
+                <a class="sidebar-link" data-view="view-help" href="#help">
+                    <i class="fas fa-headset"></i> <span>Contact Admin</span>
+                </a>
+                <a class="sidebar-link" href="#" onclick="if(window.toggleChat) window.toggleChat(); return false;">
+                    <i class="fas fa-comment-dots"></i> <span>MarketMind AI</span>
+                </a>
             </nav>
-            <div class="nav-actions">
-                <button class="icon-btn" id="settingsToggle" title="Settings" aria-label="Settings">
-                    <i class="fas fa-cog"></i>
-                </button>
-                <div class="user-profile-wrapper">
-                    <button class="user-avatar-btn" id="profileToggle" aria-label="User menu">
-                        <i class="fas fa-user-circle"></i>
-                    </button>
-                    <div class="profile-dropdown" id="profileDropdown">
-                        <div class="profile-header" id="profileHeader">
-                            <i class="fas fa-user-circle profile-avatar-lg"></i>
-                            <p class="profile-name" id="profileName">Guest</p>
-                            <p class="profile-email" id="profileEmail">Not signed in</p>
+        </aside>
+        <div class="main-content-wrapper">
+            <header class="top-navbar" id="navbar">
+                <div class="nav-container">
+
+                    <div class="nav-search">
+                        <i class="fas fa-search"></i>
+                        <input autocomplete="off" id="searchBar" placeholder="Search features…" type="text" />
+                        <div class="search-results" id="searchResults"></div>
+                    </div>
+                    <div class="nav-actions">
+                        <div class="theme-minimal-toggle" style="margin-right: 0.5rem;">
+                            <button id="themeIconBtn" class="icon-btn" title="Toggle Dark/Light Mode">
+                                <i class="fas fa-moon" id="themeIcon"></i>
+                            </button>
                         </div>
-                        <div class="profile-actions">
-                            <button id="loginBtn" class="dropdown-item"><i class="fas fa-sign-in-alt"></i> Sign
-                                In</button>
-                            <button id="logoutBtn" class="dropdown-item hidden"><i class="fas fa-sign-out-alt"></i> Sign
-                                Out</button>
+                        <button aria-label="App Features" class="icon-btn" id="settingsToggle"
+                            title="App Features & Display">
+                            <i class="fas fa-th"></i>
+                        </button>
+                        <div class="user-profile-wrapper">
+                            <button aria-label="User menu" class="user-avatar-btn" id="profileToggle">
+                                <i class="fas fa-user-circle" id="navAvatarIcon"></i>
+                                <img id="navAvatarImg"
+                                    style="display:none; width:100%; height:100%; border-radius:50%; object-fit:cover;">
+                            </button>
+                            <div class="profile-dropdown" id="profileDropdown">
+                                <div class="profile-header" id="profileHeader">
+                                    <div class="profile-avatar-lg">
+                                        <i class="fas fa-user-circle" id="dropdownAvatarIcon"></i>
+                                        <img id="dropdownAvatarImg"
+                                            style="display:none; width:64px; height:64px; border-radius:50%; object-fit:cover; margin: 0 auto;">
+                                    </div>
+                                    <p class="profile-name" id="profileName">Guest User</p>
+                                    <p class="profile-email" id="profileEmail">Not signed in</p>
+                                </div>
+                                <div class="profile-actions">
+                                    <button class="dropdown-item" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Sign
+                                        In</button>
+                                    <button class="dropdown-item hidden" id="logoutBtn"><i
+                                            class="fas fa-sign-out-alt"></i> Sign
+                                        Out</button>
+                                </div>
+                            </div>
                         </div>
+                        <button aria-label="Toggle menu" class="hamburger" id="hamburger">
+                            <span></span><span></span><span></span>
+                        </button>
                     </div>
                 </div>
-                <button class="hamburger" id="hamburger" aria-label="Toggle menu">
-                    <span></span><span></span><span></span>
-                </button>
-            </div>
+            </header>
+            <main class="content-area">
+                <div class="view-section active" id="view-home">
+                    <section class="hero" id="home">
+                        <div class="hero-bg"></div>
+                        <div class="hero-content">
+                            <h1 class="hero-title">AI-Powered Marketing Suite</h1>
+                            <p class="hero-subtitle">Generate high-performing campaigns, craft compelling pitches, and
+                                qualify leads
+                                with advanced AI technology</p>
+                            <a class="btn-hero" href="#campaign">Get Started Now <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </section>
+                    <section class="features-section" id="features">
+                        <div class="container">
+                            <h2 class="section-title white">Our AI Features</h2>
+                            <div class="features-grid">
+                                <a class="feature-card" href="#campaign">
+                                    <i class="fas fa-bullseye"></i>
+                                    <h3>Campaign Generator</h3>
+                                    <p>Create data-driven marketing campaigns tailored to your specific audience and
+                                        platform with
+                                        AI-powered insights</p>
+                                </a>
+                                <a class="feature-card" href="#pitch">
+                                    <i class="fas fa-handshake"></i>
+                                    <h3>Sales Pitch Creator</h3>
+                                    <p>Craft compelling, personalised sales pitches for any customer persona in seconds
+                                    </p>
+                                </a>
+                                <a class="feature-card" href="#lead">
+                                    <i class="fas fa-chart-bar"></i>
+                                    <h3>Lead Qualifier</h3>
+                                    <p>Score and prioritise leads with AI-powered qualification analysis based on the
+                                        BNUA framework</p>
+                                </a>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="platforms-section" id="platforms">
+                        <div class="container">
+                            <h2 class="section-title white">Supported Platforms</h2>
+                            <div class="platforms-grid">
+                                <div class="platform-card"><i class="fab fa-linkedin"
+                                        style="color: #0077b5;"></i><span>LinkedIn</span></div>
+                                <div class="platform-card"><i class="fab fa-facebook"
+                                        style="color: #1877f2;"></i><span>Facebook</span></div>
+                                <div class="platform-card"><i class="fab fa-instagram"
+                                        style="color: #e4405f;"></i><span>Instagram</span></div>
+                                <div class="platform-card"><i class="fab fa-x-twitter"
+                                        style="color: #000;"></i><span>Twitter/X</span></div>
+                                <div class="platform-card"><i class="fab fa-youtube"
+                                        style="color: #ff0000;"></i><span>YouTube</span></div>
+                                <div class="platform-card"><i class="fas fa-envelope"
+                                        style="color: #ea4335;"></i><span>Email</span></div>
+                                <div class="platform-card"><i class="fab fa-tiktok"
+                                        style="color: #000;"></i><span>TikTok</span></div>
+                                <div class="platform-card"><i class="fab fa-whatsapp"
+                                        style="color: #25d366;"></i><span>WhatsApp</span></div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <div class="view-section" id="view-dashboard">
+                    <section class="dashboard-section" id="dashboard">
+                        <div class="container">
+                            <h2 class="section-title"><i class="fas fa-chart-pie"></i> Analytics Dashboard</h2>
+                            <!-- Controls -->
+                            <div class="analytics-controls">
+                                <div class="filters-group">
+                                    <select class="filter-select" id="filterIndustry">
+                                        <option value="all">Every Industry</option>
+                                        <option value="tech">Technology</option>
+                                        <option value="retail">Retail</option>
+                                        <option value="finance">Finance</option>
+                                    </select>
+                                    <select class="filter-select" id="filterRegion">
+                                        <option value="global">Global Regions</option>
+                                        <option value="na">North America</option>
+                                        <option value="eu">Europe</option>
+                                        <option value="apac">APAC</option>
+                                    </select>
+                                    <select class="filter-select" id="filterCustomerType">
+                                        <option value="all">All Customer Types</option>
+                                        <option value="enterprise">Enterprise</option>
+                                        <option value="smb">SMB</option>
+                                    </select>
+                                </div>
+                                <div class="filters-group">
+                                    <button class="btn-secondary" style="padding: 10px 16px; font-size: 0.85rem;"><i
+                                            class="fas fa-file-pdf"></i> Export PDF</button>
+                                    <button class="btn-secondary" style="padding: 10px 16px; font-size: 0.85rem;"><i
+                                            class="fas fa-file-csv"></i> Download CSV</button>
+                                    <button class="btn-primary" style="padding: 10px 16px; font-size: 0.85rem;"><i
+                                            class="fas fa-share-alt"></i> Share Link</button>
+                                </div>
+                            </div>
+                            <!-- KPI Cards -->
+                            <div class="dashboard-grid"
+                                style="grid-template-columns: repeat(5, 1fr); margin-bottom: 2.5rem;">
+                                <div class="stat-card">
+                                    <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+                                    <div class="stat-value" data-prefix="$" data-suffix="M" data-target="1.2">$0M</div>
+                                    <div class="stat-label">Total Sales</div>
+                                    <div class="stat-trend up"><i class="fas fa-arrow-up"></i> 14% vs last period</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon"><i class="fas fa-random"></i></div>
+                                    <div class="stat-value" data-suffix=".4%" data-target="8">0.0%</div>
+                                    <div class="stat-label">Conversion Rate</div>
+                                    <div class="stat-trend up"><i class="fas fa-arrow-up"></i> 1% vs last period</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon"><i class="fas fa-star"></i></div>
+                                    <div class="stat-value" data-target="86">0</div>
+                                    <div class="stat-label">Avg Lead Score</div>
+                                    <div class="stat-trend up"><i class="fas fa-arrow-up"></i> 4 pts vs last period
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon"><i class="fas fa-smile"></i></div>
+                                    <div class="stat-value" data-suffix="%" data-target="92">0%</div>
+                                    <div class="stat-label">Customer Sentiment</div>
+                                    <div class="stat-trend up"><i class="fas fa-arrow-up"></i> 2% vs last period</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+                                    <div class="stat-value" data-prefix="+" data-suffix="%" data-target="28">+0%</div>
+                                    <div class="stat-label">Revenue Growth</div>
+                                    <div class="stat-trend up"><i class="fas fa-arrow-up"></i> 5% vs last period</div>
+                                </div>
+                            </div>
+                            <!-- Charts Row 1 -->
+                            <div class="chart-container-row">
+                                <div class="chart-box">
+                                    <div class="chart-header">
+                                        <h3>Sales Trend Over Time</h3>
+                                        <div class="time-filters">
+                                            <button class="time-btn" data-chart="sales" data-range="7d">7 Days</button>
+                                            <button class="time-btn active" data-chart="sales" data-range="30d">30
+                                                Days</button>
+                                            <button class="time-btn" data-chart="sales" data-range="1y">1 Year</button>
+                                        </div>
+                                    </div>
+                                    <div class="chart-container">
+                                        <canvas id="salesLineChart"></canvas>
+                                    </div>
+                                </div>
+                                <div class="chart-box">
+                                    <div class="chart-header">
+                                        <h3>Product Performance</h3>
+                                        <div class="time-filters">
+                                            <button class="time-btn active" data-chart="product"
+                                                data-range="monthly">Monthly</button>
+                                            <button class="time-btn" data-chart="product"
+                                                data-range="weekly">Weekly</button>
+                                        </div>
+                                    </div>
+                                    <div class="chart-container">
+                                        <canvas id="productBarChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Charts Row 2 -->
+                            <div class="chart-container-row">
+                                <div class="chart-box">
+                                    <div class="chart-header">
+                                        <h3>Customer Sentiment Analysis</h3>
+                                        <div class="time-filters">
+                                            <button class="time-btn active" data-chart="sentiment" data-range="30d">30
+                                                Days</button>
+                                        </div>
+                                    </div>
+                                    <div class="chart-container">
+                                        <canvas id="sentimentPieChart"></canvas>
+                                    </div>
+                                </div>
+                                <div class="chart-box">
+                                    <div class="chart-header">
+                                        <h3>User Engagement Heatmap</h3>
+                                        <div class="time-filters">
+                                            <button class="time-btn active" data-chart="heatmap"
+                                                data-range="30d">Global</button>
+                                        </div>
+                                    </div>
+                                    <!-- Simulating a heatmap with a customized Chart.js Bubble Chart for simplicity -->
+                                    <div class="chart-container">
+                                        <canvas id="engagementHeatmap"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <div class="view-section" id="view-campaign">
+                    <section class="form-section" id="campaign">
+                        <div class="container">
+                            <div class="form-card">
+                                <div class="form-header">
+                                    <i class="fas fa-bullseye form-icon"></i>
+                                    <h2>Campaign Generator</h2>
+                                    <p>Create a comprehensive, AI-powered marketing campaign strategy</p>
+                                </div>
+                                <form id="campaignForm">
+                                    <div class="form-group">
+                                        <label for="campProduct">PRODUCT NAME</label>
+                                        <input id="campProduct" name="product"
+                                            placeholder="e.g. AI-powered email marketing platform" type="text" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="campIndustry">TYPE OF INDUSTRY</label>
+                                        <input id="campIndustry" name="industry"
+                                            placeholder="e.g. Healthcare, Fintech, Education" type="text" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="campCost">PRODUCT COST</label>
+                                        <input id="campCost" name="cost" placeholder="e.g. $49/mo, $500 one-time"
+                                            type="text" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="campAudience">TARGET AUDIENCE</label>
+                                        <input id="campAudience" name="audience"
+                                            placeholder="e.g. Marketing managers at mid-size e-commerce companies"
+                                            type="text" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="campPlatform">MARKETING PLATFORM</label>
+                                        <input id="campPlatform" name="platform" placeholder="e.g. LinkedIn, Instagram"
+                                            type="text" />
+                                    </div>
+                                    <div class="button-group">
+                                        <button class="btn-primary" type="submit"><i class="fas fa-rocket"></i> Generate
+                                            Campaign</button>
+                                        <button class="btn-secondary campaign-clear" type="button"><i
+                                                class="fas fa-eraser"></i>
+                                            Clear</button>
+                                    </div>
+                                </form>
+                                <div aria-live="polite" class="loading-wrapper" id="campaignLoading">
+                                    <div class="spinner"></div><span>Generating your campaign…</span>
+                                </div>
+                                <div class="result-box" id="campaignOutput">
+                                    <h4>YOUR CAMPAIGN STRATEGY</h4>
+                                    <div class="result-content" id="campaignResult"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <div class="view-section" id="view-pitch">
+                    <section class="form-section" id="pitch">
+                        <div class="container">
+                            <div class="form-card">
+                                <div class="form-header">
+                                    <i class="fas fa-handshake form-icon"></i>
+                                    <h2>Sales Pitch Creator</h2>
+                                    <p>Craft a personalised, compelling sales pitch tailored to your customer</p>
+                                </div>
+                                <form id="pitchForm">
+                                    <div class="form-group">
+                                        <label for="pitchProduct">PRODUCT / SOLUTION NAME</label>
+                                        <input id="pitchProduct" name="product"
+                                            placeholder="e.g. Cloud-based inventory management system" type="text" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="pitchCustomer">CUSTOMER PERSONA</label>
+                                        <input id="pitchCustomer" name="customer"
+                                            placeholder="e.g. Operations Director, Fortune 500 retail company"
+                                            type="text" />
+                                    </div>
+                                    <div class="button-group">
+                                        <button class="btn-primary" type="submit"><i class="fas fa-microphone-alt"></i>
+                                            Generate
+                                            Pitch</button>
+                                        <button class="btn-secondary pitch-clear" type="button"><i
+                                                class="fas fa-eraser"></i>
+                                            Clear</button>
+                                    </div>
+                                </form>
+                                <div aria-live="polite" class="loading-wrapper" id="pitchLoading">
+                                    <div class="spinner"></div><span>Crafting your pitch…</span>
+                                </div>
+                                <div class="result-box" id="pitchOutput">
+                                    <h4>YOUR SALES PITCH</h4>
+                                    <div class="result-content" id="pitchResult"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <div class="view-section" id="view-lead">
+                    <section class="form-section" id="lead">
+                        <div class="container">
+                            <div class="form-card">
+                                <div class="form-header">
+                                    <i class="fas fa-chart-bar form-icon"></i>
+                                    <h2>Lead Qualifier</h2>
+                                    <p>Score and qualify leads using AI-powered BNUA analysis</p>
+                                </div>
+                                <form id="leadForm">
+                                    <div class="form-group">
+                                        <label for="leadName">LEAD NAME</label>
+                                        <input id="leadName" name="name" placeholder="e.g. Sarah Johnson" type="text" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="leadBudget">BUDGET QUALITY</label>
+                                        <input id="leadBudget" name="budget"
+                                            placeholder="e.g. $150,000 annual software budget" type="text" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="leadNeed">BUSINESS NEED</label>
+                                        <input id="leadNeed" name="need"
+                                            placeholder="e.g. Improving customer retention by 20%" type="text" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="leadUrgency">URGENCY LEVEL</label>
+                                        <input id="leadUrgency" name="urgency"
+                                            placeholder="e.g. Solution needed by end of Q3, high priority"
+                                            type="text" />
+                                    </div>
+                                    <div class="button-group">
+                                        <button class="btn-primary" type="submit"><i class="fas fa-star"></i> Score
+                                            Lead</button>
+                                        <button class="btn-secondary lead-clear" type="button"><i
+                                                class="fas fa-eraser"></i>
+                                            Clear</button>
+                                    </div>
+                                </form>
+                                <div aria-live="polite" class="loading-wrapper" id="leadLoading">
+                                    <div class="spinner"></div><span>Analysing lead…</span>
+                                </div>
+                                <div class="result-box" id="leadOutput">
+                                    <h4>LEAD QUALIFICATION ANALYSIS</h4>
+                                    <div class="result-content" id="leadResult"></div>
+                                </div>
+                                <p class="form-footnote">Scores help prioritise your sales efforts and maximise
+                                    efficiency</p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <div class="view-section" id="view-settings">
+                    <section class="form-section">
+                        <div class="container">
+                            <div class="form-card">
+                                <div class="form-header">
+                                    <i class="fas fa-user-circle form-icon"></i>
+                                    <h2>Account Verification & Profile</h2>
+                                    <p>Manage your user details, avatar, and security preferences</p>
+                                </div>
+                                <form onsubmit="event.preventDefault();">
+                                    <div class="form-group"
+                                        style="display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2rem;">
+                                        <div id="profileImageContainer"
+                                            style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; background: var(--card-bg); display: flex; align-items: center; justify-content: center; border: 2px solid var(--accent);">
+                                            <i class="fas fa-user-circle" id="profileViewIcon"
+                                                style="font-size: 5rem; color: var(--text-muted)"></i>
+                                            <img id="profileViewImg"
+                                                style="display:none; width:100%; height:100%; object-fit:cover;">
+                                        </div>
+                                        <div>
+                                            <h4 style="margin-bottom: 0.5rem; color: var(--text);">Profile Picture</h4>
+                                            <input type="file" id="profilePicInput" accept="image/*"
+                                                style="display:none">
+                                            <button class="btn-secondary" type="button"
+                                                onclick="document.getElementById('profilePicInput').click()">
+                                                <i class="fas fa-camera"></i> Upload New
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>FULL NAME</label>
+                                        <input type="text" placeholder="Your Name" value="Guest User" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label>EMAIL ADDRESS</label>
+                                        <input type="email" placeholder="you@company.com" value="" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label>ACCOUNT DELETION</label>
+                                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.8rem;">
+                                            Permanently delete your account and all associated data.</p>
+                                        <button class="btn-secondary" style="border-color: #dc3545; color: #dc3545;"
+                                            type="button">
+                                            <i class="fas fa-trash"></i> Delete Account
+                                        </button>
+                                    </div>
+                                    <div class="button-group" style="margin-top: 2rem;">
+                                        <button class="btn-primary" type="submit"><i class="fas fa-save"></i> Save
+                                            Changes</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <div class="view-section" id="view-help">
+                    <section class="form-section">
+                        <div class="container">
+                            <h2 class="section-title">Help Center</h2>
+                            <div class="form-card" style="text-align: center; padding: 4rem 2rem;">
+                                <i class="fas fa-headset"
+                                    style="font-size: 4rem; color: var(--accent); margin-bottom: 1rem;"></i>
+                                <h3 style="margin-bottom: 1rem;">How can we help?</h3>
+                                <p style="color: var(--text-muted); margin-bottom: 2rem;">Read our documentation or
+                                    reach out to support.</p>
+                                <button class="btn-primary" onclick="if(window.toggleChat) window.toggleChat()"><i
+                                        class="fas fa-comment-dots"></i>
+                                    Open AI Assistant</button>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <footer class="footer">
+                    <div class="container footer-inner">
+                        <p>© 2026 MarketMind — AI-Powered Sales &amp; Marketing Intelligence</p>
+                        <div class="footer-links">
+                            <a href="#home">Home</a>
+                            <a href="#campaign">Campaign</a>
+                            <a href="#pitch">Pitch</a>
+                            <a href="#lead">Lead Score</a>
+                        </div>
+                    </div>
+                </footer>
+            </main>
         </div>
-    </header>
+    </div>
+    <!-- ═══════════════════════ NAVIGATION ═══════════════════════ -->
 
     <!-- ═══════════════════════ SETTINGS PANEL ═══════════════════════ -->
     <aside class="settings-panel" id="settingsPanel">
         <div class="settings-header">
-            <h3><i class="fas fa-sliders-h"></i> Settings</h3>
-            <button class="settings-close" id="settingsClose" aria-label="Close settings"><i
+            <h3><i class="fas fa-th"></i> App Features & Display</h3>
+            <button aria-label="Close settings" class="settings-close" id="settingsClose"><i
                     class="fas fa-times"></i></button>
         </div>
         <div class="settings-body">
-            <div class="setting-group">
-                <label class="setting-label">Theme</label>
-                <div class="theme-switch-wrapper">
-                    <span class="theme-label-text"><i class="fas fa-sun"></i> Light</span>
-                    <label class="switch">
-                        <input type="checkbox" id="themeToggle">
-                        <span class="slider"></span>
-                    </label>
-                    <span class="theme-label-text"><i class="fas fa-moon"></i> Dark</span>
+            <div class="setting-group" style="padding-bottom: 1rem; border-bottom: 1px solid var(--card-border);">
+                <label class="setting-label">Quick Links</label>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-top: 0.5rem;">
+                    <a href="#" class="btn-secondary"
+                        style="padding: 10px; text-align: center; display: block; text-decoration: none;"
+                        onclick="document.getElementById('profileToggle').click()"><i class="fas fa-user"></i><br><span
+                            style="font-size: 11px; margin-top: 4px; display: inline-block;">Profile</span></a>
+                    <a href="#" class="btn-secondary"
+                        style="padding: 10px; text-align: center; display: block; text-decoration: none;"
+                        onclick="toggleChat()"><i class="fas fa-robot"></i><br><span
+                            style="font-size: 11px; margin-top: 4px; display: inline-block;">AI Assist</span></a>
+                    <a href="#" class="btn-secondary"
+                        style="padding: 10px; text-align: center; display: block; text-decoration: none;"
+                        onclick="document.querySelector('[data-view=view-campaign]').click(); document.getElementById('settingsClose').click();"><i
+                            class="fas fa-bullseye"></i><br><span
+                            style="font-size: 11px; margin-top: 4px; display: inline-block;">Campaigns</span></a>
+                    <a href="#" class="btn-secondary"
+                        style="padding: 10px; text-align: center; display: block; text-decoration: none;"
+                        onclick="document.querySelector('[data-view=view-lead]').click(); document.getElementById('settingsClose').click();"><i
+                            class="fas fa-chart-bar"></i><br><span
+                            style="font-size: 11px; margin-top: 4px; display: inline-block;">Analytics</span></a>
+                </div>
+            </div>
+            <div class="setting-group" style="margin-top: 1.5rem;">
+                <label class="setting-label">System Performance</label>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span>AI Response Time</span>
+                        <span style="color: var(--success);">~1.2s</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span>Daily API Usage</span>
+                        <span>12% / 100%</span>
+                    </div>
                 </div>
             </div>
             <div class="setting-group">
@@ -110,378 +611,88 @@
         </div>
     </aside>
     <div class="settings-overlay" id="settingsOverlay"></div>
-
     <!-- ═══════════════════════ LOGIN MODAL ═══════════════════════ -->
     <div class="modal-overlay" id="loginModal">
         <div class="modal-card">
-            <button class="modal-close" id="loginModalClose" aria-label="Close"><i class="fas fa-times"></i></button>
+            <button aria-label="Close" class="modal-close" id="loginModalClose"><i class="fas fa-times"></i></button>
             <div class="modal-icon"><i class="fas fa-lock"></i></div>
             <h2>Welcome Back</h2>
             <p class="modal-subtitle">Sign in to your MarketMind account</p>
-            <form id="loginForm" autocomplete="off">
+            <form autocomplete="off" id="loginForm">
                 <div class="form-group">
                     <label for="loginEmail">EMAIL</label>
-                    <input type="email" id="loginEmail" placeholder="you@company.com" required>
+                    <input id="loginEmail" placeholder="you@company.com" required="" type="email" />
                 </div>
                 <div class="form-group">
                     <label for="loginPassword">PASSWORD</label>
-                    <input type="password" id="loginPassword" placeholder="••••••••" required>
+                    <div style="position: relative;">
+                        <input id="loginPassword" placeholder="••••••••" required="" type="password"
+                            style="padding-right: 45px;" />
+                        <button type="button" id="togglePassword"
+                            style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; z-index: 10;">
+                            <i class="fas fa-eye" id="eyeIcon"></i>
+                        </button>
+                    </div>
                 </div>
-                <button type="submit" class="btn-primary full-width">Sign In</button>
+                <div style="text-align: right; margin-bottom: 1.5rem; margin-top: -0.5rem;">
+                    <a href="#"
+                        style="color: var(--accent); font-size: 0.82rem; text-decoration: none; font-weight: 500;"
+                        onclick="alert('Password reset link has been sent to your email.'); return false;">Forgot
+                        Password?</a>
+                </div>
+                <button class="btn-primary full-width" type="submit">Sign In</button>
             </form>
-
             <div
                 style="margin-top: 1.5rem; display: flex; align-items: center; text-align: center; color: var(--text-muted); font-size: 0.85rem;">
                 <div style="flex: 1; height: 1px; background: var(--card-border);"></div>
                 <span style="padding: 0 10px;">or continue with</span>
                 <div style="flex: 1; height: 1px; background: var(--card-border);"></div>
             </div>
-
             <div style="margin-top: 1.5rem; display: flex; justify-content: center;">
-                <div id="g_id_onload"
+                <div data-auto_prompt="false" data-callback="handleCredentialResponse"
                     data-client_id="216894166162-hnfgqeq9kj3onfu1i2v0b8s0fi6as21u.apps.googleusercontent.com"
-                    data-context="signin" data-ux_mode="popup" data-callback="handleCredentialResponse"
-                    data-auto_prompt="false">
+                    data-context="signin" data-ux_mode="popup" id="g_id_onload">
                 </div>
-                <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="outline"
-                    data-text="signin_with" data-size="large" data-logo_alignment="left">
+                <div class="g_id_signin" data-logo_alignment="left" data-shape="rectangular" data-size="large"
+                    data-text="signin_with" data-theme="outline" data-type="standard">
                 </div>
             </div>
         </div>
     </div>
     <!-- ═══════════════════════ HERO ═══════════════════════ -->
-    <section class="hero" id="home">
-        <div class="hero-bg"></div>
-        <div class="hero-content">
-            <h1 class="hero-title">AI-Powered Marketing Suite</h1>
-            <p class="hero-subtitle">Generate high-performing campaigns, craft compelling pitches, and qualify leads
-                with advanced AI technology</p>
-            <a href="#campaign" class="btn-hero">Get Started Now <i class="fas fa-arrow-right"></i></a>
-        </div>
-    </section>
 
     <!-- ═══════════════════════ DASHBOARD & ANALYTICS ═══════════════════════ -->
-    <section class="dashboard-section" id="dashboard">
-        <div class="container">
-            <h2 class="section-title"><i class="fas fa-chart-pie"></i> Analytics Dashboard</h2>
-
-            <!-- Controls -->
-            <div class="analytics-controls">
-                <div class="filters-group">
-                    <select class="filter-select" id="filterIndustry">
-                        <option value="all">Every Industry</option>
-                        <option value="tech">Technology</option>
-                        <option value="retail">Retail</option>
-                        <option value="finance">Finance</option>
-                    </select>
-                    <select class="filter-select" id="filterRegion">
-                        <option value="global">Global Regions</option>
-                        <option value="na">North America</option>
-                        <option value="eu">Europe</option>
-                        <option value="apac">APAC</option>
-                    </select>
-                    <select class="filter-select" id="filterCustomerType">
-                        <option value="all">All Customer Types</option>
-                        <option value="enterprise">Enterprise</option>
-                        <option value="smb">SMB</option>
-                    </select>
-                </div>
-                <div class="filters-group">
-                    <button class="btn-secondary" style="padding: 10px 16px; font-size: 0.85rem;"><i
-                            class="fas fa-file-pdf"></i> Export PDF</button>
-                    <button class="btn-secondary" style="padding: 10px 16px; font-size: 0.85rem;"><i
-                            class="fas fa-file-csv"></i> Download CSV</button>
-                    <button class="btn-primary" style="padding: 10px 16px; font-size: 0.85rem;"><i
-                            class="fas fa-share-alt"></i> Share Link</button>
-                </div>
-            </div>
-
-            <!-- KPI Cards -->
-            <div class="dashboard-grid" style="grid-template-columns: repeat(5, 1fr); margin-bottom: 2.5rem;">
-                <div class="stat-card">
-                    <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
-                    <div class="stat-value" data-target="1.2" data-prefix="$" data-suffix="M">$0M</div>
-                    <div class="stat-label">Total Sales</div>
-                    <div class="stat-trend up"><i class="fas fa-arrow-up"></i> 14% vs last period</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon"><i class="fas fa-random"></i></div>
-                    <div class="stat-value" data-target="8" data-suffix=".4%">0.0%</div>
-                    <div class="stat-label">Conversion Rate</div>
-                    <div class="stat-trend up"><i class="fas fa-arrow-up"></i> 1% vs last period</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon"><i class="fas fa-star"></i></div>
-                    <div class="stat-value" data-target="86">0</div>
-                    <div class="stat-label">Avg Lead Score</div>
-                    <div class="stat-trend up"><i class="fas fa-arrow-up"></i> 4 pts vs last period</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon"><i class="fas fa-smile"></i></div>
-                    <div class="stat-value" data-target="92" data-suffix="%">0%</div>
-                    <div class="stat-label">Customer Sentiment</div>
-                    <div class="stat-trend up"><i class="fas fa-arrow-up"></i> 2% vs last period</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
-                    <div class="stat-value" data-target="28" data-prefix="+" data-suffix="%">+0%</div>
-                    <div class="stat-label">Revenue Growth</div>
-                    <div class="stat-trend up"><i class="fas fa-arrow-up"></i> 5% vs last period</div>
-                </div>
-            </div>
-
-            <!-- Charts Row 1 -->
-            <div class="chart-container-row">
-                <div class="chart-box">
-                    <div class="chart-header">
-                        <h3>Sales Trend Over Time</h3>
-                        <div class="time-filters">
-                            <button class="time-btn" data-chart="sales" data-range="7d">7 Days</button>
-                            <button class="time-btn active" data-chart="sales" data-range="30d">30 Days</button>
-                            <button class="time-btn" data-chart="sales" data-range="1y">1 Year</button>
-                        </div>
-                    </div>
-                    <canvas id="salesLineChart" height="240"></canvas>
-                </div>
-                <div class="chart-box">
-                    <div class="chart-header">
-                        <h3>Product Performance</h3>
-                        <div class="time-filters">
-                            <button class="time-btn active" data-chart="product" data-range="monthly">Monthly</button>
-                            <button class="time-btn" data-chart="product" data-range="weekly">Weekly</button>
-                        </div>
-                    </div>
-                    <canvas id="productBarChart" height="240"></canvas>
-                </div>
-            </div>
-
-            <!-- Charts Row 2 -->
-            <div class="chart-container-row">
-                <div class="chart-box">
-                    <div class="chart-header">
-                        <h3>Customer Sentiment Analysis</h3>
-                        <div class="time-filters">
-                            <button class="time-btn active" data-chart="sentiment" data-range="30d">30 Days</button>
-                        </div>
-                    </div>
-                    <div style="max-height: 240px; display: flex; justify-content: center;">
-                        <canvas id="sentimentPieChart"></canvas>
-                    </div>
-                </div>
-                <div class="chart-box">
-                    <div class="chart-header">
-                        <h3>User Engagement Heatmap</h3>
-                        <div class="time-filters">
-                            <button class="time-btn active" data-chart="heatmap" data-range="30d">Global</button>
-                        </div>
-                    </div>
-                    <!-- Simulating a heatmap with a customized Chart.js Bubble Chart for simplicity -->
-                    <canvas id="engagementHeatmap" height="240"></canvas>
-                </div>
-            </div>
-
-        </div>
-    </section>
 
     <!-- ═══════════════════════ FEATURES ═══════════════════════ -->
-    <section class="features-section" id="features">
-        <div class="container">
-            <h2 class="section-title white">Our AI Features</h2>
-            <div class="features-grid">
-                <a href="#campaign" class="feature-card">
-                    <i class="fas fa-bullseye"></i>
-                    <h3>Campaign Generator</h3>
-                    <p>Create data-driven marketing campaigns tailored to your specific audience and platform with
-                        AI-powered insights</p>
-                </a>
-                <a href="#pitch" class="feature-card">
-                    <i class="fas fa-handshake"></i>
-                    <h3>Sales Pitch Creator</h3>
-                    <p>Craft compelling, personalised sales pitches for any customer persona in seconds</p>
-                </a>
-                <a href="#lead" class="feature-card">
-                    <i class="fas fa-chart-bar"></i>
-                    <h3>Lead Qualifier</h3>
-                    <p>Score and prioritise leads with AI-powered qualification analysis based on the BNUA framework</p>
-                </a>
-            </div>
-        </div>
-    </section>
 
     <!-- ═══════════════════════ PLATFORMS ═══════════════════════ -->
-    <section class="platforms-section" id="platforms">
-        <div class="container">
-            <h2 class="section-title white">Supported Platforms</h2>
-            <div class="platforms-grid">
-                <div class="platform-card"><i class="fab fa-linkedin"></i><span>LinkedIn</span></div>
-                <div class="platform-card"><i class="fab fa-facebook"></i><span>Facebook</span></div>
-                <div class="platform-card"><i class="fab fa-instagram"></i><span>Instagram</span></div>
-                <div class="platform-card"><i class="fab fa-x-twitter"></i><span>Twitter/X</span></div>
-                <div class="platform-card"><i class="fab fa-youtube"></i><span>YouTube</span></div>
-                <div class="platform-card"><i class="fas fa-envelope"></i><span>Email</span></div>
-                <div class="platform-card"><i class="fab fa-tiktok"></i><span>TikTok</span></div>
-                <div class="platform-card"><i class="fab fa-whatsapp"></i><span>WhatsApp</span></div>
-            </div>
-        </div>
-    </section>
 
     <!-- ═══════════════════════ CAMPAIGN GENERATOR ═══════════════════════ -->
-    <section class="form-section" id="campaign">
-        <div class="container">
-            <div class="form-card">
-                <div class="form-header">
-                    <i class="fas fa-bullseye form-icon"></i>
-                    <h2>Campaign Generator</h2>
-                    <p>Create a comprehensive, AI-powered marketing campaign strategy</p>
-                </div>
-                <form id="campaignForm">
-                    <div class="form-group">
-                        <label for="campProduct">PRODUCT NAME</label>
-                        <input type="text" id="campProduct" name="product"
-                            placeholder="e.g. AI-powered email marketing platform">
-                    </div>
-                    <div class="form-group">
-                        <label for="campAudience">TARGET AUDIENCE</label>
-                        <input type="text" id="campAudience" name="audience"
-                            placeholder="e.g. Marketing managers at mid-size e-commerce companies">
-                    </div>
-                    <div class="form-group">
-                        <label for="campPlatform">MARKETING PLATFORM</label>
-                        <input type="text" id="campPlatform" name="platform" placeholder="e.g. LinkedIn, Instagram">
-                    </div>
-                    <div class="button-group">
-                        <button type="submit" class="btn-primary"><i class="fas fa-rocket"></i> Generate
-                            Campaign</button>
-                        <button type="button" class="btn-secondary campaign-clear"><i class="fas fa-eraser"></i>
-                            Clear</button>
-                    </div>
-                </form>
-                <div class="loading-wrapper" id="campaignLoading" aria-live="polite">
-                    <div class="spinner"></div><span>Generating your campaign…</span>
-                </div>
-                <div class="result-box" id="campaignOutput">
-                    <h4>YOUR CAMPAIGN STRATEGY</h4>
-                    <div class="result-content" id="campaignResult"></div>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- ═══════════════════════ PITCH GENERATOR ═══════════════════════ -->
-    <section class="form-section" id="pitch">
-        <div class="container">
-            <div class="form-card">
-                <div class="form-header">
-                    <i class="fas fa-handshake form-icon"></i>
-                    <h2>Sales Pitch Creator</h2>
-                    <p>Craft a personalised, compelling sales pitch tailored to your customer</p>
-                </div>
-                <form id="pitchForm">
-                    <div class="form-group">
-                        <label for="pitchProduct">PRODUCT / SOLUTION NAME</label>
-                        <input type="text" id="pitchProduct" name="product"
-                            placeholder="e.g. Cloud-based inventory management system">
-                    </div>
-                    <div class="form-group">
-                        <label for="pitchCustomer">CUSTOMER PERSONA</label>
-                        <input type="text" id="pitchCustomer" name="customer"
-                            placeholder="e.g. Operations Director, Fortune 500 retail company">
-                    </div>
-                    <div class="button-group">
-                        <button type="submit" class="btn-primary"><i class="fas fa-microphone-alt"></i> Generate
-                            Pitch</button>
-                        <button type="button" class="btn-secondary pitch-clear"><i class="fas fa-eraser"></i>
-                            Clear</button>
-                    </div>
-                </form>
-                <div class="loading-wrapper" id="pitchLoading" aria-live="polite">
-                    <div class="spinner"></div><span>Crafting your pitch…</span>
-                </div>
-                <div class="result-box" id="pitchOutput">
-                    <h4>YOUR SALES PITCH</h4>
-                    <div class="result-content" id="pitchResult"></div>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- ═══════════════════════ LEAD QUALIFIER ═══════════════════════ -->
-    <section class="form-section" id="lead">
-        <div class="container">
-            <div class="form-card">
-                <div class="form-header">
-                    <i class="fas fa-chart-bar form-icon"></i>
-                    <h2>Lead Qualifier</h2>
-                    <p>Score and qualify leads using AI-powered BNUA analysis</p>
-                </div>
-                <form id="leadForm">
-                    <div class="form-group">
-                        <label for="leadName">LEAD NAME</label>
-                        <input type="text" id="leadName" name="name" placeholder="e.g. Sarah Johnson">
-                    </div>
-                    <div class="form-group">
-                        <label for="leadBudget">BUDGET QUALITY</label>
-                        <input type="text" id="leadBudget" name="budget"
-                            placeholder="e.g. $150,000 annual software budget">
-                    </div>
-                    <div class="form-group">
-                        <label for="leadNeed">BUSINESS NEED</label>
-                        <input type="text" id="leadNeed" name="need"
-                            placeholder="e.g. Improving customer retention by 20%">
-                    </div>
-                    <div class="form-group">
-                        <label for="leadUrgency">URGENCY LEVEL</label>
-                        <input type="text" id="leadUrgency" name="urgency"
-                            placeholder="e.g. Solution needed by end of Q3, high priority">
-                    </div>
-                    <div class="button-group">
-                        <button type="submit" class="btn-primary"><i class="fas fa-star"></i> Score Lead</button>
-                        <button type="button" class="btn-secondary lead-clear"><i class="fas fa-eraser"></i>
-                            Clear</button>
-                    </div>
-                </form>
-                <div class="loading-wrapper" id="leadLoading" aria-live="polite">
-                    <div class="spinner"></div><span>Analysing lead…</span>
-                </div>
-                <div class="result-box" id="leadOutput">
-                    <h4>LEAD QUALIFICATION ANALYSIS</h4>
-                    <div class="result-content" id="leadResult"></div>
-                </div>
-                <p class="form-footnote">Scores help prioritise your sales efforts and maximise efficiency</p>
-            </div>
-        </div>
-    </section>
 
     <!-- ═══════════════════════ FOOTER ═══════════════════════ -->
-    <footer class="footer">
-        <div class="container footer-inner">
-            <p>&copy; 2026 MarketMind — AI-Powered Sales & Marketing Intelligence</p>
-            <div class="footer-links">
-                <a href="#home">Home</a>
-                <a href="#campaign">Campaign</a>
-                <a href="#pitch">Pitch</a>
-                <a href="#lead">Lead Score</a>
-            </div>
-        </div>
-    </footer>
 
-    <!-- ═══════════════════════ CHATBOT WIDGET ═══════════════════════ -->
-    <div id="chatbotFab" class="chatbot-fab" title="Chat with MarketMind AI">
-        <i class="fas fa-comment-dots chatbot-fab-icon"></i>
-        <i class="fas fa-times chatbot-fab-close"></i>
-        <span class="chatbot-fab-pulse"></span>
+    <div class="chatbot-fab" id="chatbotFab" title="Chat with MarketMind AI">
+        <div class="chatbot-fab-pulse"></div>
+        <img src="/static/pngfind.com-iron-man-symbol-png-5547506.png" id="chatbotIconImg"
+            style="width: 100%; height: 100%; border-radius: 50%; padding: 4px; box-sizing: border-box; filter: drop-shadow(0 0 12px rgba(0, 191, 255, 0.8));">
+        <i class="fas fa-times chatbot-fab-close" id="chatbotFabClose"></i>
     </div>
-
-    <div id="chatbotWindow" class="chatbot-window">
+    <div class="chatbot-window" id="chatbotWindow">
         <div class="chatbot-header">
             <div class="chatbot-header-info">
-                <div class="chatbot-avatar"><i class="fas fa-robot"></i></div>
+                <div class="chatbot-avatar"><img src="/static/pngfind.com-iron-man-symbol-png-5547506.png"
+                        style="width: 100%; height: 100%; border-radius: 50%; background: #000; box-shadow: 0 0 5px rgba(0, 191, 255, 0.5);">
+                </div>
                 <div>
                     <div class="chatbot-title">MarketMind AI</div>
                     <div class="chatbot-status"><span class="chatbot-status-dot"></span> Online</div>
                 </div>
             </div>
-            <button id="chatbotClose" class="chatbot-close-btn"><i class="fas fa-chevron-down"></i></button>
+            <button class="chatbot-close-btn" id="chatbotClose"><i class="fas fa-chevron-down"></i></button>
         </div>
         <div class="chatbot-messages" id="chatbotMessages">
             <div class="chat-bubble bot">
@@ -495,17 +706,17 @@
             <span>MarketMind is thinking…</span>
         </div>
         <form class="chatbot-input-bar" id="chatbotForm">
-            <input type="text" id="chatbotInput" placeholder="Ask me anything…" autocomplete="off">
-            <button type="submit" class="chatbot-send-btn"><i class="fas fa-paper-plane"></i></button>
+            <input autocomplete="off" id="chatbotInput" placeholder="Ask me anything…" type="text" />
+            <button class="chatbot-send-btn" type="submit"><i class="fas fa-paper-plane"></i></button>
         </form>
     </div>
-
     <!-- ═══════════════════════ JAVASCRIPT ═══════════════════════ -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
 
             /* ── Helpers ────────────────────────────────────────── */
             function formatOutput(text) {
+                if (typeof text !== 'string') return JSON.stringify(text, null, 2);
                 return text.replace(/\n/g, '<br>');
             }
 
@@ -516,36 +727,85 @@
                     const res = await fetch(endpoint, { method: 'POST', body: new FormData(form) });
                     const data = await res.json();
 
-                    if (endpoint === '/lead_score') {
-                        try {
-                            const parsed = JSON.parse(data.result);
-                            const score = parsed.score || 0;
-                            let badgeClass = 'low';
-                            if (score >= 75) badgeClass = 'high';
-                            else if (score >= 40) badgeClass = 'medium';
+                    const rawResult = data.result || '';
+                    let parsed = null;
+                    try {
+                        parsed = JSON.parse(rawResult);
+                    } catch (e) {
+                        parsed = null;
+                    }
 
-                            const prob = parsed.probability || 0;
+                    if (endpoint === '/lead_score' && parsed) {
+                        const score = parsed.score || 0;
+                        let badgeClass = 'low';
+                        if (score >= 75) badgeClass = 'high';
+                        else if (score >= 40) badgeClass = 'medium';
+                        const prob = parsed.probability || 0;
 
-                            resultEl.innerHTML = `
-                                <div class="lead-score-dashboard">
-                                    <div class="score-header">
-                                        <div class="score-value-large">${score}</div>
-                                        <div class="badge ${badgeClass}"><i class="fas fa-certificate"></i> Score: ${badgeClass.toUpperCase()}</div>
+                        resultEl.innerHTML = `
+                            <div class="lead-score-dashboard">
+                                <div class="score-header">
+                                    <div class="score-value-large">${score}</div>
+                                    <div class="badge ${badgeClass}"><i class="fas fa-certificate"></i> Score: ${badgeClass.toUpperCase()}</div>
+                                </div>
+                                <div style="margin-bottom: 0.5rem; font-weight: 600; font-size: 0.9rem; color: var(--text);">Conversion Probability: ${prob}%</div>
+                                <div class="progress-track">
+                                    <div class="progress-fill ${badgeClass}" style="width: ${prob}%;"></div>
+                                </div>
+                                <div class="analysis-text" style="margin-top:1.5rem;">
+                                    ${formatOutput(parsed.analysis || '')}
+                                </div>
+                            </div>
+                        `;
+                    } else if ((endpoint === '/generate_campaign' || endpoint === '/generate_pitch') && parsed) {
+                        const prob = parsed.success_probability || 0;
+                        let mainContent = parsed.content || rawResult;
+                        if (typeof mainContent === 'object') {
+                            mainContent = JSON.stringify(mainContent, null, 2);
+                        }
+                        const audience = parsed.target_audience || 'Not specified';
+                        const canvasId = `chart-${Math.random().toString(36).substr(2, 9)}`;
+
+                        resultEl.innerHTML = `
+                            <div class="ai-structured-result" style="animation: fadeIn 0.5s ease;">
+                                <div style="display: flex; gap: 2rem; align-items: flex-start; margin-bottom: 2rem; flex-wrap: wrap;">
+                                    <div style="flex: 1; min-width: 250px;">
+                                        <h4 style="color: var(--accent); margin-bottom: 1rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem;">Target Audience</h4>
+                                        <p style="font-size: 0.95rem; color: var(--text); line-height: 1.6;">${audience}</p>
                                     </div>
-                                    <div style="margin-bottom: 0.5rem; font-weight: 600; font-size: 0.9rem; color: var(--text);">Conversion Probability: ${prob}%</div>
-                                    <div class="progress-track">
-                                        <div class="progress-fill ${badgeClass}" style="width: ${prob}%;"></div>
-                                    </div>
-                                    <div class="analysis-text" style="margin-top:1.5rem;">
-                                        ${formatOutput(parsed.analysis || '')}
+                                    <div style="width: 180px; text-align: center;">
+                                        <h4 style="color: var(--accent); margin-bottom: 1rem;">Success Chance</h4>
+                                        <div style="height: 140px; position: relative;">
+                                            <canvas id="${canvasId}"></canvas>
+                                        </div>
+                                        <div style="margin-top: 10px; font-weight: 700; font-size: 1.2rem; color: var(--text);">${prob}%</div>
                                     </div>
                                 </div>
-                            `;
-                        } catch (e) {
-                            resultEl.innerHTML = formatOutput(data.result);
-                        }
+                                <div class="ai-content-text" style="padding: 1.8rem; background: var(--input-bg); border-radius: 12px; border-left: 5px solid var(--accent); color: var(--text); line-height: 1.8;">
+                                    ${formatOutput(mainContent)}
+                                </div>
+                            </div>
+                        `;
+
+                        setTimeout(() => {
+                            const c = document.getElementById(canvasId);
+                            if (c) {
+                                new Chart(c.getContext('2d'), {
+                                    type: 'doughnut',
+                                    data: {
+                                        labels: ['Success', 'Risks'],
+                                        datasets: [{
+                                            data: [prob, 100 - prob],
+                                            backgroundColor: ['#764ba2', 'rgba(150,150,150,0.1)'],
+                                            borderWidth: 0
+                                        }]
+                                    },
+                                    options: { cutout: '82%', plugins: { legend: { display: false }, tooltip: { enabled: false } }, responsive: true, maintainAspectRatio: false }
+                                });
+                            }
+                        }, 50);
                     } else {
-                        resultEl.innerHTML = formatOutput(data.result);
+                        resultEl.innerHTML = formatOutput(rawResult);
                     }
 
                     outputEl.classList.add('show');
@@ -623,14 +883,18 @@
             statValues.forEach(v => dashObs.observe(v));
 
             /* ── Theme Toggle ─────────────────────────────────── */
-            const themeToggle = document.getElementById('themeToggle');
+            const themeBtn = document.getElementById('themeIconBtn');
+            const themeIcon = document.getElementById('themeIcon');
             const savedTheme = localStorage.getItem('mm_theme') || 'light';
             document.documentElement.setAttribute('data-theme', savedTheme);
-            themeToggle.checked = savedTheme === 'dark';
-            themeToggle.addEventListener('change', () => {
-                const theme = themeToggle.checked ? 'dark' : 'light';
-                document.documentElement.setAttribute('data-theme', theme);
-                localStorage.setItem('mm_theme', theme);
+            themeIcon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+
+            themeBtn.addEventListener('click', () => {
+                const current = document.documentElement.getAttribute('data-theme');
+                const next = current === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', next);
+                localStorage.setItem('mm_theme', next);
+                themeIcon.className = next === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
             });
 
             /* ── Font Size ────────────────────────────────────── */
@@ -701,26 +965,35 @@
             };
 
             function setLoggedIn(email, customName = null) {
-                let name = customName;
-                if (!name) {
-                    name = email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-                }
+                let name = customName || email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
                 profileName.textContent = name;
                 profileEmail.textContent = email;
+                const sname = document.getElementById('sidebarUserName');
+                if (sname) sname.textContent = name;
                 loginBtn.classList.add('hidden');
                 logoutBtn.classList.remove('hidden');
-                localStorage.setItem('mm_user', email);
+                localStorage.setItem('mm_user', JSON.stringify({ email, name }));
+                const pic = localStorage.getItem('marketmind_profile_pic');
+                if (pic) updateAvatars(pic);
             }
             function setLoggedOut() {
                 profileName.textContent = 'Guest';
                 profileEmail.textContent = 'Not signed in';
+                const sname = document.getElementById('sidebarUserName');
+                if (sname) sname.textContent = 'Guest User';
                 loginBtn.classList.remove('hidden');
                 logoutBtn.classList.add('hidden');
                 localStorage.removeItem('mm_user');
+                updateAvatars(null);
             }
 
             const savedUser = localStorage.getItem('mm_user');
-            if (savedUser) setLoggedIn(savedUser);
+            if (savedUser) {
+                try {
+                    const u = JSON.parse(savedUser);
+                    setLoggedIn(u.email, u.name);
+                } catch (e) { setLoggedIn(savedUser); }
+            }
 
             loginBtn.addEventListener('click', () => {
                 profileDropdown.classList.remove('open');
@@ -729,13 +1002,38 @@
             document.getElementById('loginModalClose').addEventListener('click', () => loginModal.classList.remove('open'));
             loginModal.addEventListener('click', (e) => { if (e.target === loginModal) loginModal.classList.remove('open'); });
 
-            document.getElementById('loginForm').addEventListener('submit', (e) => {
+            document.getElementById('loginForm').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const email = document.getElementById('loginEmail').value;
-                setLoggedIn(email);
-                loginModal.classList.remove('open');
-                document.getElementById('loginForm').reset();
+                const password = document.getElementById('loginPassword').value;
+                try {
+                    const res = await fetch('/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, password })
+                    });
+                    const data = await res.json();
+                    if (res.ok) {
+                        setLoggedIn(data.user.email, data.user.name);
+                        loginModal.classList.remove('open');
+                        document.getElementById('loginForm').reset();
+                    } else { alert(data.error || 'Login failed'); }
+                } catch (err) { alert('Login error'); }
             });
+
+            // Password Visibility Toggle
+            const togglePassword = document.getElementById('togglePassword');
+            const loginPassword = document.getElementById('loginPassword');
+            const eyeIcon = document.getElementById('eyeIcon');
+
+            if (togglePassword) {
+                togglePassword.addEventListener('click', function () {
+                    const type = loginPassword.getAttribute('type') === 'password' ? 'text' : 'password';
+                    loginPassword.setAttribute('type', type);
+                    eyeIcon.classList.toggle('fa-eye');
+                    eyeIcon.classList.toggle('fa-eye-slash');
+                });
+            }
 
             logoutBtn.addEventListener('click', () => {
                 setLoggedOut();
@@ -776,39 +1074,85 @@
                 searchResultsEl.classList.remove('open');
             });
             document.addEventListener('click', (e) => { if (!e.target.closest('.nav-search')) searchResultsEl.classList.remove('open'); });
-
             /* ── Hamburger ────────────────────────────────────── */
             const hamburger = document.getElementById('hamburger');
-            const navLinks = document.getElementById('navLinks');
-            hamburger.addEventListener('click', () => {
-                hamburger.classList.toggle('active');
-                navLinks.classList.toggle('open');
-            });
-            navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
-                hamburger.classList.remove('active');
-                navLinks.classList.remove('open');
-            }));
+            const appSidebar = document.querySelector('.app-sidebar');
+            if (hamburger && appSidebar) {
+                hamburger.addEventListener('click', () => {
+                    hamburger.classList.toggle('active');
+                    appSidebar.classList.toggle('open');
+                });
+            }
 
-            /* ── Smooth scroll for all anchor links ───────────── */
-            document.querySelectorAll('a[href^="#"]').forEach(a => {
-                a.addEventListener('click', e => {
+            /* ── View Routing Logic ───────────── */
+            const sidebarLinks = document.querySelectorAll('.sidebar-link');
+            const viewSections = document.querySelectorAll('.view-section');
+
+            function switchView(viewId) {
+                // Update active link
+                sidebarLinks.forEach(link => {
+                    link.classList.toggle('active', link.dataset.view === viewId);
+                });
+
+                // Update active view
+                viewSections.forEach(sec => {
+                    sec.classList.toggle('active', sec.id === viewId);
+                });
+
+                // Close mobile sidebar if open
+                const sidebar = document.querySelector('.app-sidebar');
+                if (sidebar) sidebar.classList.remove('open');
+            }
+
+            // Handle sidebar clicks
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', e => {
                     e.preventDefault();
-                    const target = document.querySelector(a.getAttribute('href'));
-                    if (target) target.scrollIntoView({ behavior: 'smooth' });
+                    switchView(link.dataset.view);
                 });
             });
 
-            /* ── Navbar scroll effect ─────────────────────────── */
-            window.addEventListener('scroll', () => {
-                document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
+            // Handle embedded links (e.g. from hero) that also switch views
+            document.querySelectorAll('a[href^="#"]').forEach(a => {
+                if (a.classList.contains('sidebar-link')) return; // Already handled
+
+                a.addEventListener('click', e => {
+                    e.preventDefault();
+                    const targetHref = a.getAttribute('href').replace('#', '');
+                    const targetViewId = 'view-' + targetHref;
+                    const exists = document.getElementById(targetViewId);
+                    if (exists) switchView(targetViewId);
+                });
             });
+
+            /* ── Navbar Drop Shadow based on Content Scroll ─────────────────────────── */
+            const contentArea = document.querySelector('.main-content-wrapper');
+            if (contentArea) {
+                contentArea.addEventListener('scroll', () => {
+                    document.getElementById('navbar').classList.toggle('scrolled', contentArea.scrollTop > 20);
+                });
+            }
 
             /* ── Chart.js Initialization & Interactivity ──────── */
             Chart.defaults.color = '#9a9cb0';
             Chart.defaults.font.family = "'Inter', sans-serif";
 
+            // Global Tooltip Styling
+            Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(25, 25, 35, 0.85)';
+            Chart.defaults.plugins.tooltip.titleFont = { family: 'Poppins', size: 14, weight: '600' };
+            Chart.defaults.plugins.tooltip.bodyFont = { family: 'Inter', size: 13 };
+            Chart.defaults.plugins.tooltip.padding = 12;
+            Chart.defaults.plugins.tooltip.cornerRadius = 8;
+            Chart.defaults.plugins.tooltip.displayColors = false;
+
             // 1. Sales Trend (Line Graph)
             const salesCtx = document.getElementById('salesLineChart').getContext('2d');
+
+            // Create Gradient for Line Chart
+            let salesGradient = salesCtx.createLinearGradient(0, 0, 0, 400);
+            salesGradient.addColorStop(0, 'rgba(118, 75, 162, 0.4)');
+            salesGradient.addColorStop(1, 'rgba(118, 75, 162, 0.0)');
+
             const salesData = {
                 '7d': [120, 190, 150, 220, 180, 250, 210],
                 '30d': [1500, 1800, 2100, 1900, 2400, 2800, 2600, 3100, 2900, 3400, 3200, 3800], // simplified to 12 points
@@ -828,28 +1172,34 @@
                         label: 'Sales ($)',
                         data: salesData['30d'],
                         borderColor: '#764ba2',
-                        backgroundColor: 'rgba(118, 75, 162, 0.1)',
-                        borderWidth: 2,
+                        backgroundColor: salesGradient,
+                        borderWidth: 3,
                         tension: 0.4,
                         fill: true,
-                        pointBackgroundColor: '#f093fb',
-                        pointBorderColor: '#fff',
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#764ba2',
                         pointRadius: 4,
-                        pointHoverRadius: 6
+                        pointHoverRadius: 7,
+                        pointBorderWidth: 2
                     }]
                 },
                 options: {
                     responsive: true, maintainAspectRatio: false,
                     plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } },
                     scales: {
-                        y: { beginAtZero: true, grid: { color: 'rgba(150,150,150,0.1)' } },
-                        x: { grid: { display: false } }
+                        y: { beginAtZero: true, border: { display: false }, grid: { color: 'rgba(150,150,150,0.08)', drawBorder: false } },
+                        x: { border: { display: false }, grid: { display: false } }
                     }
                 }
             });
 
             // 2. Product Performance (Bar Chart)
             const productCtx = document.getElementById('productBarChart').getContext('2d');
+
+            let barGradient = productCtx.createLinearGradient(0, 0, 0, 400);
+            barGradient.addColorStop(0, '#667eea');
+            barGradient.addColorStop(1, '#764ba2');
+
             const productData = {
                 'weekly': [40, 65, 30, 85, 50],
                 'monthly': [180, 250, 120, 380, 210]
@@ -862,41 +1212,62 @@
                     datasets: [{
                         label: 'Units Sold',
                         data: productData['monthly'],
-                        backgroundColor: [
-                            'rgba(118, 75, 162, 0.8)',
-                            'rgba(102, 126, 234, 0.8)',
-                            'rgba(240, 147, 251, 0.8)',
-                            'rgba(33, 150, 243, 0.8)',
-                            'rgba(67, 160, 71, 0.8)'
-                        ],
-                        borderRadius: 6
+                        backgroundColor: barGradient,
+                        borderRadius: 8,
+                        barThickness: 32,
+                        borderSkipped: false
                     }]
                 },
                 options: {
                     responsive: true, maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
-                    scales: { y: { beginAtZero: true, grid: { color: 'rgba(150,150,150,0.1)' } }, x: { grid: { display: false } } }
+                    scales: {
+                        y: { beginAtZero: true, border: { display: false }, grid: { color: 'rgba(150,150,150,0.08)' } },
+                        x: { border: { display: false }, grid: { display: false } }
+                    }
                 }
             });
 
-            // 3. Customer Sentiment (Pie Chart)
+            // 3. Customer Sentiment (Pie Chart) // Changed to Donut with Center Text Plugin
             const sentimentCtx = document.getElementById('sentimentPieChart').getContext('2d');
+
+            // Custom plugin to draw text in the center of the doughnut
+            const centerTextPlugin = {
+                id: 'centerText',
+                beforeDraw: function (chart) {
+                    if (chart.config.type !== 'doughnut') return;
+                    var width = chart.width, height = chart.height, ctx = chart.ctx;
+                    ctx.restore();
+                    var fontSize = (height / 120).toFixed(2);
+                    ctx.font = "bold " + fontSize + "em Inter";
+                    ctx.textBaseline = "middle";
+                    var text = "65%",
+                        textX = Math.round((width - ctx.measureText(text).width) / 2),
+                        textY = height / 2;
+                    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text') || '#333';
+                    ctx.fillText(text, textX, textY);
+                    ctx.save();
+                }
+            };
+
             let sentimentChart = new Chart(sentimentCtx, {
                 type: 'doughnut',
                 data: {
                     labels: ['Positive', 'Neutral', 'Negative'],
                     datasets: [{
                         data: [65, 25, 10],
-                        backgroundColor: ['#28a745', '#ffc107', '#dc3545'],
-                        borderWidth: 0,
-                        hoverOffset: 8
+                        backgroundColor: ['#43A047', '#FFB300', '#E53935'],
+                        borderWidth: 2,
+                        borderColor: getComputedStyle(document.documentElement).getPropertyValue('--surface') || '#fff',
+                        hoverOffset: 4
                     }]
                 },
                 options: {
                     responsive: true, maintainAspectRatio: false,
-                    cutout: '70%',
-                    plugins: { legend: { position: 'right' } }
-                }
+                    cutout: '75%',
+                    plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8 } } }
+                },
+                plugins: [centerTextPlugin] // Injecting the plugin here
             });
 
             // 4. User Engagement Heatmap (Simulated via Bubble Chart)
@@ -906,7 +1277,7 @@
                 const data = [];
                 for (let d = 0; d < 7; d++) {
                     for (let h = 8; h < 20; h += 2) { // 8am to 8pm, 2hr intervals
-                        data.push({ x: h, y: d, r: Math.random() * 15 + 3 });
+                        data.push({ x: h, y: d, r: Math.random() * 8 + 3 }); // Reduced radius for better fit
                     }
                 }
                 return data;
@@ -917,17 +1288,35 @@
                     datasets: [{
                         label: 'Engagement Intensity',
                         data: generateHeatmapData(),
-                        backgroundColor: 'rgba(118, 75, 162, 0.6)',
-                        borderColor: '#764ba2',
-                        borderWidth: 1
+                        backgroundColor: 'rgba(118, 75, 162, 0.4)',
+                        borderColor: 'transparent',
+                        hoverBackgroundColor: 'rgba(118, 75, 162, 0.8)',
                     }]
                 },
                 options: {
                     responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => `Intensity: ${Math.round(ctx.raw.r)}` } } },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => `Intensity: ${Math.round(ctx.raw.r)}`
+                            }
+                        }
+                    },
                     scales: {
-                        x: { title: { display: true, text: 'Hour of Day (24h)' }, min: 6, max: 22, grid: { color: 'rgba(150,150,150,0.1)' } },
-                        y: { title: { display: true, text: 'Day of Week' }, ticks: { callback: val => ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][val] }, min: -1, max: 7, grid: { color: 'rgba(150,150,150,0.1)' } }
+                        x: {
+                            title: { display: false },
+                            min: 6, max: 22,
+                            border: { display: false },
+                            grid: { display: false }
+                        },
+                        y: {
+                            title: { display: false },
+                            ticks: { callback: val => ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][val] },
+                            min: -0.5, max: 6.5,
+                            border: { display: false },
+                            grid: { display: false }
+                        }
                     }
                 }
             });
@@ -973,6 +1362,7 @@
                 chatFab.classList.toggle('open', isOpen);
                 if (isOpen) chatInput.focus();
             }
+            window.toggleChat = toggleChat; // Expose to global for onclick handlers
 
             chatFab.addEventListener('click', toggleChat);
             chatClose.addEventListener('click', toggleChat);
@@ -1024,6 +1414,54 @@
                 } finally {
                     chatTyping.classList.remove('active');
                 }
+            });
+
+            /* ── Profile Picture Handling ─────────────────────────── */
+            const profilePicInput = document.getElementById('profilePicInput');
+            const avatarIds = {
+                nav: { icon: 'navAvatarIcon', img: 'navAvatarImg' },
+                view: { icon: 'profileViewIcon', img: 'profileViewImg' },
+                dropdown: { icon: 'dropdownAvatarIcon', img: 'dropdownAvatarImg' }
+            };
+
+            function updateAvatars(dataUrl) {
+                const ids = {
+                    nav: { icon: 'navAvatarIcon', img: 'navAvatarImg' },
+                    sidebar: { icon: 'sidebarAvatarIcon', img: 'sidebarAvatarImg' },
+                    view: { icon: 'profileViewIcon', img: 'profileViewImg' },
+                    dropdown: { icon: 'dropdownAvatarIcon', img: 'dropdownAvatarImg' }
+                };
+                Object.values(ids).forEach(elSet => {
+                    const iconEl = document.getElementById(elSet.icon);
+                    const imgEl = document.getElementById(elSet.img);
+                    if (dataUrl) {
+                        if (iconEl) iconEl.style.display = 'none';
+                        if (imgEl) {
+                            imgEl.src = dataUrl;
+                            imgEl.style.display = 'block';
+                        }
+                    } else {
+                        if (iconEl) iconEl.style.display = 'block';
+                        if (imgEl) imgEl.style.display = 'none';
+                    }
+                });
+            }
+
+            // Load saved profile pic
+            const savedPic = localStorage.getItem('marketmind_profile_pic');
+            if (savedPic) updateAvatars(savedPic);
+
+            profilePicInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const dataUrl = event.target.result;
+                    localStorage.setItem('marketmind_profile_pic', dataUrl);
+                    updateAvatars(dataUrl);
+                };
+                reader.readAsDataURL(file);
             });
 
         });
