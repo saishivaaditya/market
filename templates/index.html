@@ -465,6 +465,41 @@
         </div>
     </footer>
 
+    <!-- ═══════════════════════ CHATBOT WIDGET ═══════════════════════ -->
+    <div id="chatbotFab" class="chatbot-fab" title="Chat with MarketMind AI">
+        <i class="fas fa-comment-dots chatbot-fab-icon"></i>
+        <i class="fas fa-times chatbot-fab-close"></i>
+        <span class="chatbot-fab-pulse"></span>
+    </div>
+
+    <div id="chatbotWindow" class="chatbot-window">
+        <div class="chatbot-header">
+            <div class="chatbot-header-info">
+                <div class="chatbot-avatar"><i class="fas fa-robot"></i></div>
+                <div>
+                    <div class="chatbot-title">MarketMind AI</div>
+                    <div class="chatbot-status"><span class="chatbot-status-dot"></span> Online</div>
+                </div>
+            </div>
+            <button id="chatbotClose" class="chatbot-close-btn"><i class="fas fa-chevron-down"></i></button>
+        </div>
+        <div class="chatbot-messages" id="chatbotMessages">
+            <div class="chat-bubble bot">
+                <div class="chat-bubble-content">Hi there! 👋 I'm your <strong>MarketMind Assistant</strong>. Ask me
+                    anything about marketing, sales, lead scoring, or how to use this platform!</div>
+                <div class="chat-bubble-time">Just now</div>
+            </div>
+        </div>
+        <div class="chatbot-typing" id="chatbotTyping">
+            <div class="typing-dots"><span></span><span></span><span></span></div>
+            <span>MarketMind is thinking…</span>
+        </div>
+        <form class="chatbot-input-bar" id="chatbotForm">
+            <input type="text" id="chatbotInput" placeholder="Ask me anything…" autocomplete="off">
+            <button type="submit" class="chatbot-send-btn"><i class="fas fa-paper-plane"></i></button>
+        </form>
+    </div>
+
     <!-- ═══════════════════════ JAVASCRIPT ═══════════════════════ -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -921,6 +956,74 @@
                         heatmapChart.update();
                     }
                 });
+            });
+
+            /* ── Chatbot Widget ──────────────────────────────────── */
+            const chatFab = document.getElementById('chatbotFab');
+            const chatWindow = document.getElementById('chatbotWindow');
+            const chatClose = document.getElementById('chatbotClose');
+            const chatForm = document.getElementById('chatbotForm');
+            const chatInput = document.getElementById('chatbotInput');
+            const chatMessages = document.getElementById('chatbotMessages');
+            const chatTyping = document.getElementById('chatbotTyping');
+            let chatHistory = []; // multi-turn conversation
+
+            function toggleChat() {
+                const isOpen = chatWindow.classList.toggle('open');
+                chatFab.classList.toggle('open', isOpen);
+                if (isOpen) chatInput.focus();
+            }
+
+            chatFab.addEventListener('click', toggleChat);
+            chatClose.addEventListener('click', toggleChat);
+
+            function getTimeStr() {
+                return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            }
+
+            function addBubble(text, role) {
+                const bubble = document.createElement('div');
+                bubble.className = `chat-bubble ${role}`;
+                bubble.innerHTML = `
+                    <div class="chat-bubble-content">${text.replace(/\n/g, '<br>')}</div>
+                    <div class="chat-bubble-time">${getTimeStr()}</div>
+                `;
+                chatMessages.appendChild(bubble);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            chatForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const msg = chatInput.value.trim();
+                if (!msg) return;
+
+                // Show user bubble
+                addBubble(msg, 'user');
+                chatInput.value = '';
+
+                // Push to history
+                chatHistory.push({ role: 'user', content: msg });
+
+                // Show typing indicator
+                chatTyping.classList.add('active');
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                try {
+                    const res = await fetch('/chatbot', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ messages: chatHistory })
+                    });
+                    const data = await res.json();
+                    const reply = data.reply || 'Sorry, I could not process that.';
+
+                    chatHistory.push({ role: 'assistant', content: reply });
+                    addBubble(reply, 'bot');
+                } catch (err) {
+                    addBubble('Connection error. Please try again.', 'bot');
+                } finally {
+                    chatTyping.classList.remove('active');
+                }
             });
 
         });

@@ -120,6 +120,63 @@ def lead_score():
 
 
 # ---------------------------------------------------------------------------
+# Chatbot — Multi-turn AI Assistant
+# ---------------------------------------------------------------------------
+
+CHATBOT_SYSTEM_PROMPT = (
+    "You are MarketMind Assistant, a friendly and knowledgeable AI business advisor "
+    "embedded inside the MarketMind platform. MarketMind is an AI-powered Sales & "
+    "Marketing Intelligence platform that helps users:\n"
+    "1. Generate marketing campaigns (specify product, audience, platform)\n"
+    "2. Create personalized sales pitches (specify product, customer persona)\n"
+    "3. Score and qualify leads (based on budget, need, urgency)\n"
+    "4. View analytics dashboards with KPI cards and interactive charts\n\n"
+    "You help users with:\n"
+    "- Business strategy, marketing tips, and sales techniques\n"
+    "- Navigating and using the MarketMind app features\n"
+    "- Interpreting analytics data and lead scores\n"
+    "- General business advice and best practices\n\n"
+    "Keep responses concise (2-4 sentences unless detail is requested). "
+    "Be warm, professional, and actionable. Use emojis sparingly for friendliness."
+)
+
+
+def call_groq_chat(messages: list) -> str:
+    """Send a multi-turn conversation to Groq and return the assistant reply."""
+    try:
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {GROQ_API_KEY}",
+        }
+        full_messages = [{"role": "system", "content": CHATBOT_SYSTEM_PROMPT}] + messages
+        body = {
+            "model": GROQ_MODEL,
+            "messages": full_messages,
+            "temperature": 0.7,
+            "max_tokens": 512,
+        }
+        response = requests.post(GROQ_URL, json=body, headers=headers, timeout=30)
+        response.raise_for_status()
+        data = response.json()
+        result = data["choices"][0]["message"]["content"]
+        result = re.sub(r'[\*\\_]{2,}', '', result)
+        return result
+    except Exception:
+        return "I'm having trouble connecting right now. Please try again in a moment!"
+
+
+@app.route("/chatbot", methods=["POST"])
+def chatbot():
+    """Handle multi-turn chatbot conversations."""
+    data = request.get_json(silent=True) or {}
+    messages = data.get("messages", [])
+    if not messages:
+        return jsonify({"reply": "Hi there! 👋 I'm your MarketMind Assistant. How can I help you today?"})
+    reply = call_groq_chat(messages)
+    return jsonify({"reply": reply})
+
+
+# ---------------------------------------------------------------------------
 # Entry Point
 # ---------------------------------------------------------------------------
 if __name__ == "__main__":
