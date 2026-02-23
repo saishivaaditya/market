@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="MarketMind — AI-Powered Sales & Marketing Intelligence Platform. Generate campaigns, craft pitches, and qualify leads with advanced AI.">
+    <title>MarketMind — AI Marketing Suite</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <!-- ═══════════════════════ NAVIGATION ═══════════════════════ -->
+    <header class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#home" class="nav-brand">
+                <i class="fas fa-chart-line"></i>
+                <span>MarketMind</span>
+            </a>
+            <div class="nav-search">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchBar" placeholder="Search features…" autocomplete="off">
+                <div class="search-results" id="searchResults"></div>
+            </div>
+            <nav class="nav-links" id="navLinks">
+                <a href="#home">Home</a>
+                <a href="#dashboard">Dashboard</a>
+                <a href="#campaign">Campaign</a>
+                <a href="#pitch">Pitch</a>
+                <a href="#lead">Lead Score</a>
+            </nav>
+            <div class="nav-actions">
+                <button class="icon-btn" id="settingsToggle" title="Settings" aria-label="Settings">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <div class="user-profile-wrapper">
+                    <button class="user-avatar-btn" id="profileToggle" aria-label="User menu">
+                        <i class="fas fa-user-circle"></i>
+                    </button>
+                    <div class="profile-dropdown" id="profileDropdown">
+                        <div class="profile-header" id="profileHeader">
+                            <i class="fas fa-user-circle profile-avatar-lg"></i>
+                            <p class="profile-name" id="profileName">Guest</p>
+                            <p class="profile-email" id="profileEmail">Not signed in</p>
+                        </div>
+                        <div class="profile-actions">
+                            <button id="loginBtn" class="dropdown-item"><i class="fas fa-sign-in-alt"></i> Sign
+                                In</button>
+                            <button id="logoutBtn" class="dropdown-item hidden"><i class="fas fa-sign-out-alt"></i> Sign
+                                Out</button>
+                        </div>
+                    </div>
+                </div>
+                <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ═══════════════════════ SETTINGS PANEL ═══════════════════════ -->
+    <aside class="settings-panel" id="settingsPanel">
+        <div class="settings-header">
+            <h3><i class="fas fa-sliders-h"></i> Settings</h3>
+            <button class="settings-close" id="settingsClose" aria-label="Close settings"><i
+                    class="fas fa-times"></i></button>
+        </div>
+        <div class="settings-body">
+            <div class="setting-group">
+                <label class="setting-label">Theme</label>
+                <div class="theme-switch-wrapper">
+                    <span class="theme-label-text"><i class="fas fa-sun"></i> Light</span>
+                    <label class="switch">
+                        <input type="checkbox" id="themeToggle">
+                        <span class="slider"></span>
+                    </label>
+                    <span class="theme-label-text"><i class="fas fa-moon"></i> Dark</span>
+                </div>
+            </div>
+            <div class="setting-group">
+                <label class="setting-label">Font Size</label>
+                <div class="font-size-btns">
+                    <button class="fs-btn" data-size="small">A<sup>−</sup></button>
+                    <button class="fs-btn active" data-size="medium">A</button>
+                    <button class="fs-btn" data-size="large">A<sup>+</sup></button>
+                </div>
+            </div>
+            <div class="setting-group">
+                <label class="setting-label">Accent Color</label>
+                <div class="accent-colors">
+                    <button class="color-dot active" data-accent="purple"
+                        style="background:linear-gradient(135deg,#764ba2,#667eea)"></button>
+                    <button class="color-dot" data-accent="blue"
+                        style="background:linear-gradient(135deg,#2196F3,#00BCD4)"></button>
+                    <button class="color-dot" data-accent="green"
+                        style="background:linear-gradient(135deg,#43A047,#66BB6A)"></button>
+                    <button class="color-dot" data-accent="orange"
+                        style="background:linear-gradient(135deg,#FF5722,#FF9800)"></button>
+                </div>
+            </div>
+        </div>
+    </aside>
+    <div class="settings-overlay" id="settingsOverlay"></div>
+
+    <!-- ═══════════════════════ LOGIN MODAL ═══════════════════════ -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-card">
+            <button class="modal-close" id="loginModalClose" aria-label="Close"><i class="fas fa-times"></i></button>
+            <div class="modal-icon"><i class="fas fa-lock"></i></div>
+            <h2>Welcome Back</h2>
+            <p class="modal-subtitle">Sign in to your MarketMind account</p>
+            <form id="loginForm" autocomplete="off">
+                <div class="form-group">
+                    <label for="loginEmail">EMAIL</label>
+                    <input type="email" id="loginEmail" placeholder="you@company.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">PASSWORD</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-primary full-width">Sign In</button>
+            </form>
+
+            <div
+                style="margin-top: 1.5rem; display: flex; align-items: center; text-align: center; color: var(--text-muted); font-size: 0.85rem;">
+                <div style="flex: 1; height: 1px; background: var(--card-border);"></div>
+                <span style="padding: 0 10px;">or continue with</span>
+                <div style="flex: 1; height: 1px; background: var(--card-border);"></div>
+            </div>
+
+            <div style="margin-top: 1.5rem; display: flex; justify-content: center;">
+                <div id="g_id_onload"
+                    data-client_id="216894166162-hnfgqeq9kj3onfu1i2v0b8s0fi6as21u.apps.googleusercontent.com"
+                    data-context="signin" data-ux_mode="popup" data-callback="handleCredentialResponse"
+                    data-auto_prompt="false">
+                </div>
+                <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="outline"
+                    data-text="signin_with" data-size="large" data-logo_alignment="left">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ═══════════════════════ HERO ═══════════════════════ -->
+    <section class="hero" id="home">
+        <div class="hero-bg"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">AI-Powered Marketing Suite</h1>
+            <p class="hero-subtitle">Generate high-performing campaigns, craft compelling pitches, and qualify leads
+                with advanced AI technology</p>
+            <a href="#campaign" class="btn-hero">Get Started Now <i class="fas fa-arrow-right"></i></a>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════ DASHBOARD & ANALYTICS ═══════════════════════ -->
+    <section class="dashboard-section" id="dashboard">
+        <div class="container">
+            <h2 class="section-title"><i class="fas fa-chart-pie"></i> Analytics Dashboard</h2>
+
+            <!-- Controls -->
+            <div class="analytics-controls">
+                <div class="filters-group">
+                    <select class="filter-select" id="filterIndustry">
+                        <option value="all">Every Industry</option>
+                        <option value="tech">Technology</option>
+                        <option value="retail">Retail</option>
+                        <option value="finance">Finance</option>
+                    </select>
+                    <select class="filter-select" id="filterRegion">
+                        <option value="global">Global Regions</option>
+                        <option value="na">North America</option>
+                        <option value="eu">Europe</option>
+                        <option value="apac">APAC</option>
+                    </select>
+                    <select class="filter-select" id="filterCustomerType">
+                        <option value="all">All Customer Types</option>
+                        <option value="enterprise">Enterprise</option>
+                        <option value="smb">SMB</option>
+                    </select>
+                </div>
+                <div class="filters-group">
+                    <button class="btn-secondary" style="padding: 10px 16px; font-size: 0.85rem;"><i
+                            class="fas fa-file-pdf"></i> Export PDF</button>
+                    <button class="btn-secondary" style="padding: 10px 16px; font-size: 0.85rem;"><i
+                            class="fas fa-file-csv"></i> Download CSV</button>
+                    <button class="btn-primary" style="padding: 10px 16px; font-size: 0.85rem;"><i
+                            class="fas fa-share-alt"></i> Share Link</button>
+                </div>
+            </div>
+
+            <!-- KPI Cards -->
+            <div class="dashboard-grid" style="grid-template-columns: repeat(5, 1fr); margin-bottom: 2.5rem;">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+                    <div class="stat-value" data-target="1.2" data-prefix="$" data-suffix="M">$0M</div>
+                    <div class="stat-label">Total Sales</div>
+                    <div class="stat-trend up"><i class="fas fa-arrow-up"></i> 14% vs last period</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-random"></i></div>
+                    <div class="stat-value" data-target="8" data-suffix=".4%">0.0%</div>
+                    <div class="stat-label">Conversion Rate</div>
+                    <div class="stat-trend up"><i class="fas fa-arrow-up"></i> 1% vs last period</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-star"></i></div>
+                    <div class="stat-value" data-target="86">0</div>
+                    <div class="stat-label">Avg Lead Score</div>
+                    <div class="stat-trend up"><i class="fas fa-arrow-up"></i> 4 pts vs last period</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-smile"></i></div>
+                    <div class="stat-value" data-target="92" data-suffix="%">0%</div>
+                    <div class="stat-label">Customer Sentiment</div>
+                    <div class="stat-trend up"><i class="fas fa-arrow-up"></i> 2% vs last period</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+                    <div class="stat-value" data-target="28" data-prefix="+" data-suffix="%">+0%</div>
+                    <div class="stat-label">Revenue Growth</div>
+                    <div class="stat-trend up"><i class="fas fa-arrow-up"></i> 5% vs last period</div>
+                </div>
+            </div>
+
+            <!-- Charts Row 1 -->
+            <div class="chart-container-row">
+                <div class="chart-box">
+                    <div class="chart-header">
+                        <h3>Sales Trend Over Time</h3>
+                        <div class="time-filters">
+                            <button class="time-btn" data-chart="sales" data-range="7d">7 Days</button>
+                            <button class="time-btn active" data-chart="sales" data-range="30d">30 Days</button>
+                            <button class="time-btn" data-chart="sales" data-range="1y">1 Year</button>
+                        </div>
+                    </div>
+                    <canvas id="salesLineChart" height="240"></canvas>
+                </div>
+                <div class="chart-box">
+                    <div class="chart-header">
+                        <h3>Product Performance</h3>
+                        <div class="time-filters">
+                            <button class="time-btn active" data-chart="product" data-range="monthly">Monthly</button>
+                            <button class="time-btn" data-chart="product" data-range="weekly">Weekly</button>
+                        </div>
+                    </div>
+                    <canvas id="productBarChart" height="240"></canvas>
+                </div>
+            </div>
+
+            <!-- Charts Row 2 -->
+            <div class="chart-container-row">
+                <div class="chart-box">
+                    <div class="chart-header">
+                        <h3>Customer Sentiment Analysis</h3>
+                        <div class="time-filters">
+                            <button class="time-btn active" data-chart="sentiment" data-range="30d">30 Days</button>
+                        </div>
+                    </div>
+                    <div style="max-height: 240px; display: flex; justify-content: center;">
+                        <canvas id="sentimentPieChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-box">
+                    <div class="chart-header">
+                        <h3>User Engagement Heatmap</h3>
+                        <div class="time-filters">
+                            <button class="time-btn active" data-chart="heatmap" data-range="30d">Global</button>
+                        </div>
+                    </div>
+                    <!-- Simulating a heatmap with a customized Chart.js Bubble Chart for simplicity -->
+                    <canvas id="engagementHeatmap" height="240"></canvas>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ═══════════════════════ FEATURES ═══════════════════════ -->
+    <section class="features-section" id="features">
+        <div class="container">
+            <h2 class="section-title white">Our AI Features</h2>
+            <div class="features-grid">
+                <a href="#campaign" class="feature-card">
+                    <i class="fas fa-bullseye"></i>
+                    <h3>Campaign Generator</h3>
+                    <p>Create data-driven marketing campaigns tailored to your specific audience and platform with
+                        AI-powered insights</p>
+                </a>
+                <a href="#pitch" class="feature-card">
+                    <i class="fas fa-handshake"></i>
+                    <h3>Sales Pitch Creator</h3>
+                    <p>Craft compelling, personalised sales pitches for any customer persona in seconds</p>
+                </a>
+                <a href="#lead" class="feature-card">
+                    <i class="fas fa-chart-bar"></i>
+                    <h3>Lead Qualifier</h3>
+                    <p>Score and prioritise leads with AI-powered qualification analysis based on the BNUA framework</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════ PLATFORMS ═══════════════════════ -->
+    <section class="platforms-section" id="platforms">
+        <div class="container">
+            <h2 class="section-title white">Supported Platforms</h2>
+            <div class="platforms-grid">
+                <div class="platform-card"><i class="fab fa-linkedin"></i><span>LinkedIn</span></div>
+                <div class="platform-card"><i class="fab fa-facebook"></i><span>Facebook</span></div>
+                <div class="platform-card"><i class="fab fa-instagram"></i><span>Instagram</span></div>
+                <div class="platform-card"><i class="fab fa-x-twitter"></i><span>Twitter/X</span></div>
+                <div class="platform-card"><i class="fab fa-youtube"></i><span>YouTube</span></div>
+                <div class="platform-card"><i class="fas fa-envelope"></i><span>Email</span></div>
+                <div class="platform-card"><i class="fab fa-tiktok"></i><span>TikTok</span></div>
+                <div class="platform-card"><i class="fab fa-whatsapp"></i><span>WhatsApp</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════ CAMPAIGN GENERATOR ═══════════════════════ -->
+    <section class="form-section" id="campaign">
+        <div class="container">
+            <div class="form-card">
+                <div class="form-header">
+                    <i class="fas fa-bullseye form-icon"></i>
+                    <h2>Campaign Generator</h2>
+                    <p>Create a comprehensive, AI-powered marketing campaign strategy</p>
+                </div>
+                <form id="campaignForm">
+                    <div class="form-group">
+                        <label for="campProduct">PRODUCT NAME</label>
+                        <input type="text" id="campProduct" name="product"
+                            placeholder="e.g. AI-powered email marketing platform">
+                    </div>
+                    <div class="form-group">
+                        <label for="campAudience">TARGET AUDIENCE</label>
+                        <input type="text" id="campAudience" name="audience"
+                            placeholder="e.g. Marketing managers at mid-size e-commerce companies">
+                    </div>
+                    <div class="form-group">
+                        <label for="campPlatform">MARKETING PLATFORM</label>
+                        <input type="text" id="campPlatform" name="platform" placeholder="e.g. LinkedIn, Instagram">
+                    </div>
+                    <div class="button-group">
+                        <button type="submit" class="btn-primary"><i class="fas fa-rocket"></i> Generate
+                            Campaign</button>
+                        <button type="button" class="btn-secondary campaign-clear"><i class="fas fa-eraser"></i>
+                            Clear</button>
+                    </div>
+                </form>
+                <div class="loading-wrapper" id="campaignLoading" aria-live="polite">
+                    <div class="spinner"></div><span>Generating your campaign…</span>
+                </div>
+                <div class="result-box" id="campaignOutput">
+                    <h4>YOUR CAMPAIGN STRATEGY</h4>
+                    <div class="result-content" id="campaignResult"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════ PITCH GENERATOR ═══════════════════════ -->
+    <section class="form-section" id="pitch">
+        <div class="container">
+            <div class="form-card">
+                <div class="form-header">
+                    <i class="fas fa-handshake form-icon"></i>
+                    <h2>Sales Pitch Creator</h2>
+                    <p>Craft a personalised, compelling sales pitch tailored to your customer</p>
+                </div>
+                <form id="pitchForm">
+                    <div class="form-group">
+                        <label for="pitchProduct">PRODUCT / SOLUTION NAME</label>
+                        <input type="text" id="pitchProduct" name="product"
+                            placeholder="e.g. Cloud-based inventory management system">
+                    </div>
+                    <div class="form-group">
+                        <label for="pitchCustomer">CUSTOMER PERSONA</label>
+                        <input type="text" id="pitchCustomer" name="customer"
+                            placeholder="e.g. Operations Director, Fortune 500 retail company">
+                    </div>
+                    <div class="button-group">
+                        <button type="submit" class="btn-primary"><i class="fas fa-microphone-alt"></i> Generate
+                            Pitch</button>
+                        <button type="button" class="btn-secondary pitch-clear"><i class="fas fa-eraser"></i>
+                            Clear</button>
+                    </div>
+                </form>
+                <div class="loading-wrapper" id="pitchLoading" aria-live="polite">
+                    <div class="spinner"></div><span>Crafting your pitch…</span>
+                </div>
+                <div class="result-box" id="pitchOutput">
+                    <h4>YOUR SALES PITCH</h4>
+                    <div class="result-content" id="pitchResult"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════ LEAD QUALIFIER ═══════════════════════ -->
+    <section class="form-section" id="lead">
+        <div class="container">
+            <div class="form-card">
+                <div class="form-header">
+                    <i class="fas fa-chart-bar form-icon"></i>
+                    <h2>Lead Qualifier</h2>
+                    <p>Score and qualify leads using AI-powered BNUA analysis</p>
+                </div>
+                <form id="leadForm">
+                    <div class="form-group">
+                        <label for="leadName">LEAD NAME</label>
+                        <input type="text" id="leadName" name="name" placeholder="e.g. Sarah Johnson">
+                    </div>
+                    <div class="form-group">
+                        <label for="leadBudget">BUDGET QUALITY</label>
+                        <input type="text" id="leadBudget" name="budget"
+                            placeholder="e.g. $150,000 annual software budget">
+                    </div>
+                    <div class="form-group">
+                        <label for="leadNeed">BUSINESS NEED</label>
+                        <input type="text" id="leadNeed" name="need"
+                            placeholder="e.g. Improving customer retention by 20%">
+                    </div>
+                    <div class="form-group">
+                        <label for="leadUrgency">URGENCY LEVEL</label>
+                        <input type="text" id="leadUrgency" name="urgency"
+                            placeholder="e.g. Solution needed by end of Q3, high priority">
+                    </div>
+                    <div class="button-group">
+                        <button type="submit" class="btn-primary"><i class="fas fa-star"></i> Score Lead</button>
+                        <button type="button" class="btn-secondary lead-clear"><i class="fas fa-eraser"></i>
+                            Clear</button>
+                    </div>
+                </form>
+                <div class="loading-wrapper" id="leadLoading" aria-live="polite">
+                    <div class="spinner"></div><span>Analysing lead…</span>
+                </div>
+                <div class="result-box" id="leadOutput">
+                    <h4>LEAD QUALIFICATION ANALYSIS</h4>
+                    <div class="result-content" id="leadResult"></div>
+                </div>
+                <p class="form-footnote">Scores help prioritise your sales efforts and maximise efficiency</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════ FOOTER ═══════════════════════ -->
+    <footer class="footer">
+        <div class="container footer-inner">
+            <p>&copy; 2026 MarketMind — AI-Powered Sales & Marketing Intelligence</p>
+            <div class="footer-links">
+                <a href="#home">Home</a>
+                <a href="#campaign">Campaign</a>
+                <a href="#pitch">Pitch</a>
+                <a href="#lead">Lead Score</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ═══════════════════════ JAVASCRIPT ═══════════════════════ -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            /* ── Helpers ────────────────────────────────────────── */
+            function formatOutput(text) {
+                return text.replace(/\n/g, '<br>');
+            }
+
+            async function handleFormSubmit(form, endpoint, loadingEl, outputEl, resultEl) {
+                loadingEl.classList.add('active');
+                outputEl.classList.remove('show');
+                try {
+                    const res = await fetch(endpoint, { method: 'POST', body: new FormData(form) });
+                    const data = await res.json();
+
+                    if (endpoint === '/lead_score') {
+                        try {
+                            const parsed = JSON.parse(data.result);
+                            const score = parsed.score || 0;
+                            let badgeClass = 'low';
+                            if (score >= 75) badgeClass = 'high';
+                            else if (score >= 40) badgeClass = 'medium';
+
+                            const prob = parsed.probability || 0;
+
+                            resultEl.innerHTML = `
+                                <div class="lead-score-dashboard">
+                                    <div class="score-header">
+                                        <div class="score-value-large">${score}</div>
+                                        <div class="badge ${badgeClass}"><i class="fas fa-certificate"></i> Score: ${badgeClass.toUpperCase()}</div>
+                                    </div>
+                                    <div style="margin-bottom: 0.5rem; font-weight: 600; font-size: 0.9rem; color: var(--text);">Conversion Probability: ${prob}%</div>
+                                    <div class="progress-track">
+                                        <div class="progress-fill ${badgeClass}" style="width: ${prob}%;"></div>
+                                    </div>
+                                    <div class="analysis-text" style="margin-top:1.5rem;">
+                                        ${formatOutput(parsed.analysis || '')}
+                                    </div>
+                                </div>
+                            `;
+                        } catch (e) {
+                            resultEl.innerHTML = formatOutput(data.result);
+                        }
+                    } else {
+                        resultEl.innerHTML = formatOutput(data.result);
+                    }
+
+                    outputEl.classList.add('show');
+                } catch (err) {
+                    resultEl.innerHTML = '<span class="error-text">Something went wrong. Please check your connection and try again.</span>';
+                    outputEl.classList.add('show');
+                } finally {
+                    loadingEl.classList.remove('active');
+                }
+            }
+
+            function handleClear(form, outputEl) {
+                form.reset();
+                outputEl.classList.remove('show');
+            }
+
+            /* ── Campaign ──────────────────────────────────────── */
+            const campForm = document.getElementById('campaignForm');
+            campForm.addEventListener('submit', e => {
+                e.preventDefault();
+                handleFormSubmit(campForm, '/generate_campaign',
+                    document.getElementById('campaignLoading'),
+                    document.getElementById('campaignOutput'),
+                    document.getElementById('campaignResult'));
+            });
+            document.querySelector('.campaign-clear').addEventListener('click', () =>
+                handleClear(campForm, document.getElementById('campaignOutput')));
+
+            /* ── Pitch ─────────────────────────────────────────── */
+            const pitchForm = document.getElementById('pitchForm');
+            pitchForm.addEventListener('submit', e => {
+                e.preventDefault();
+                handleFormSubmit(pitchForm, '/generate_pitch',
+                    document.getElementById('pitchLoading'),
+                    document.getElementById('pitchOutput'),
+                    document.getElementById('pitchResult'));
+            });
+            document.querySelector('.pitch-clear').addEventListener('click', () =>
+                handleClear(pitchForm, document.getElementById('pitchOutput')));
+
+            /* ── Lead ──────────────────────────────────────────── */
+            const leadForm = document.getElementById('leadForm');
+            leadForm.addEventListener('submit', e => {
+                e.preventDefault();
+                handleFormSubmit(leadForm, '/lead_score',
+                    document.getElementById('leadLoading'),
+                    document.getElementById('leadOutput'),
+                    document.getElementById('leadResult'));
+            });
+            document.querySelector('.lead-clear').addEventListener('click', () =>
+                handleClear(leadForm, document.getElementById('leadOutput')));
+
+            /* ── Dashboard Animated Counters ──────────────────── */
+            const statValues = document.querySelectorAll('.stat-value');
+            const animateCounter = (el) => {
+                const target = +el.dataset.target;
+                const prefix = el.dataset.prefix || '';
+                const suffix = el.dataset.suffix || '';
+                const duration = 1800;
+                const start = performance.now();
+                const step = (now) => {
+                    const progress = Math.min((now - start) / duration, 1);
+                    const eased = 1 - Math.pow(1 - progress, 3);
+                    let current = target * eased;
+                    if (target % 1 !== 0) current = current.toFixed(1);
+                    else current = Math.floor(current);
+                    el.textContent = prefix + current + suffix;
+                    if (progress < 1) requestAnimationFrame(step);
+                };
+                requestAnimationFrame(step);
+            };
+            const dashObs = new IntersectionObserver((entries) => {
+                entries.forEach(e => { if (e.isIntersecting) { animateCounter(e.target); dashObs.unobserve(e.target); } });
+            }, { threshold: 0.4 });
+            statValues.forEach(v => dashObs.observe(v));
+
+            /* ── Theme Toggle ─────────────────────────────────── */
+            const themeToggle = document.getElementById('themeToggle');
+            const savedTheme = localStorage.getItem('mm_theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            themeToggle.checked = savedTheme === 'dark';
+            themeToggle.addEventListener('change', () => {
+                const theme = themeToggle.checked ? 'dark' : 'light';
+                document.documentElement.setAttribute('data-theme', theme);
+                localStorage.setItem('mm_theme', theme);
+            });
+
+            /* ── Font Size ────────────────────────────────────── */
+            const fsBtns = document.querySelectorAll('.fs-btn');
+            const savedFs = localStorage.getItem('mm_fontsize') || 'medium';
+            document.documentElement.setAttribute('data-fontsize', savedFs);
+            fsBtns.forEach(b => { b.classList.toggle('active', b.dataset.size === savedFs); });
+            fsBtns.forEach(btn => btn.addEventListener('click', () => {
+                fsBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                document.documentElement.setAttribute('data-fontsize', btn.dataset.size);
+                localStorage.setItem('mm_fontsize', btn.dataset.size);
+            }));
+
+            /* ── Accent Color ─────────────────────────────────── */
+            const colorDots = document.querySelectorAll('.color-dot');
+            const savedAccent = localStorage.getItem('mm_accent') || 'purple';
+            document.documentElement.setAttribute('data-accent', savedAccent);
+            colorDots.forEach(d => d.classList.toggle('active', d.dataset.accent === savedAccent));
+            colorDots.forEach(dot => dot.addEventListener('click', () => {
+                colorDots.forEach(d => d.classList.remove('active'));
+                dot.classList.add('active');
+                document.documentElement.setAttribute('data-accent', dot.dataset.accent);
+                localStorage.setItem('mm_accent', dot.dataset.accent);
+            }));
+
+            /* ── Settings Panel ───────────────────────────────── */
+            const settingsPanel = document.getElementById('settingsPanel');
+            const settingsOverlay = document.getElementById('settingsOverlay');
+            document.getElementById('settingsToggle').addEventListener('click', () => {
+                settingsPanel.classList.toggle('open');
+                settingsOverlay.classList.toggle('open');
+            });
+            document.getElementById('settingsClose').addEventListener('click', () => {
+                settingsPanel.classList.remove('open');
+                settingsOverlay.classList.remove('open');
+            });
+            settingsOverlay.addEventListener('click', () => {
+                settingsPanel.classList.remove('open');
+                settingsOverlay.classList.remove('open');
+            });
+
+            /* ── User Profile Dropdown ────────────────────────── */
+            const profileDropdown = document.getElementById('profileDropdown');
+            document.getElementById('profileToggle').addEventListener('click', (e) => {
+                e.stopPropagation();
+                profileDropdown.classList.toggle('open');
+            });
+            document.addEventListener('click', () => profileDropdown.classList.remove('open'));
+            profileDropdown.addEventListener('click', e => e.stopPropagation());
+
+            /* ── Login / Logout ───────────────────────────────── */
+            const loginModal = document.getElementById('loginModal');
+            const loginBtn = document.getElementById('loginBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const profileName = document.getElementById('profileName');
+            const profileEmail = document.getElementById('profileEmail');
+
+            // Make handleCredentialResponse available globally for Google's callback
+            window.handleCredentialResponse = function (response) {
+                // Decode the JWT token to get user info
+                const responsePayload = JSON.parse(atob(response.credential.split('.')[1]));
+                const email = responsePayload.email;
+                const name = responsePayload.name;
+
+                setLoggedIn(email, name);
+                loginModal.classList.remove('open');
+            };
+
+            function setLoggedIn(email, customName = null) {
+                let name = customName;
+                if (!name) {
+                    name = email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                }
+                profileName.textContent = name;
+                profileEmail.textContent = email;
+                loginBtn.classList.add('hidden');
+                logoutBtn.classList.remove('hidden');
+                localStorage.setItem('mm_user', email);
+            }
+            function setLoggedOut() {
+                profileName.textContent = 'Guest';
+                profileEmail.textContent = 'Not signed in';
+                loginBtn.classList.remove('hidden');
+                logoutBtn.classList.add('hidden');
+                localStorage.removeItem('mm_user');
+            }
+
+            const savedUser = localStorage.getItem('mm_user');
+            if (savedUser) setLoggedIn(savedUser);
+
+            loginBtn.addEventListener('click', () => {
+                profileDropdown.classList.remove('open');
+                loginModal.classList.add('open');
+            });
+            document.getElementById('loginModalClose').addEventListener('click', () => loginModal.classList.remove('open'));
+            loginModal.addEventListener('click', (e) => { if (e.target === loginModal) loginModal.classList.remove('open'); });
+
+            document.getElementById('loginForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const email = document.getElementById('loginEmail').value;
+                setLoggedIn(email);
+                loginModal.classList.remove('open');
+                document.getElementById('loginForm').reset();
+            });
+
+            logoutBtn.addEventListener('click', () => {
+                setLoggedOut();
+                profileDropdown.classList.remove('open');
+            });
+
+            /* ── Search Bar ───────────────────────────────────── */
+            const searchInput = document.getElementById('searchBar');
+            const searchResultsEl = document.getElementById('searchResults');
+            const searchableItems = [
+                { label: 'Campaign Generator', section: '#campaign', icon: 'fa-bullseye' },
+                { label: 'Sales Pitch Creator', section: '#pitch', icon: 'fa-handshake' },
+                { label: 'Lead Qualifier', section: '#lead', icon: 'fa-chart-bar' },
+                { label: 'Dashboard', section: '#dashboard', icon: 'fa-tachometer-alt' },
+                { label: 'Supported Platforms', section: '#platforms', icon: 'fa-globe' },
+                { label: 'Settings', section: null, icon: 'fa-cog', action: () => { settingsPanel.classList.add('open'); settingsOverlay.classList.add('open'); } },
+            ];
+            searchInput.addEventListener('input', () => {
+                const q = searchInput.value.toLowerCase().trim();
+                if (!q) { searchResultsEl.classList.remove('open'); return; }
+                const matches = searchableItems.filter(i => i.label.toLowerCase().includes(q));
+                if (!matches.length) { searchResultsEl.innerHTML = '<div class="sr-item">No results</div>'; }
+                else {
+                    searchResultsEl.innerHTML = matches.map(m =>
+                        `<div class="sr-item" data-section="${m.section || ''}" data-idx="${searchableItems.indexOf(m)}"><i class="fas ${m.icon}"></i> ${m.label}</div>`
+                    ).join('');
+                }
+                searchResultsEl.classList.add('open');
+            });
+            searchResultsEl.addEventListener('click', (e) => {
+                const item = e.target.closest('.sr-item');
+                if (!item) return;
+                const idx = +item.dataset.idx;
+                const entry = searchableItems[idx];
+                if (entry.action) entry.action();
+                else if (entry.section) document.querySelector(entry.section).scrollIntoView({ behavior: 'smooth' });
+                searchInput.value = '';
+                searchResultsEl.classList.remove('open');
+            });
+            document.addEventListener('click', (e) => { if (!e.target.closest('.nav-search')) searchResultsEl.classList.remove('open'); });
+
+            /* ── Hamburger ────────────────────────────────────── */
+            const hamburger = document.getElementById('hamburger');
+            const navLinks = document.getElementById('navLinks');
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                navLinks.classList.toggle('open');
+            });
+            navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('open');
+            }));
+
+            /* ── Smooth scroll for all anchor links ───────────── */
+            document.querySelectorAll('a[href^="#"]').forEach(a => {
+                a.addEventListener('click', e => {
+                    e.preventDefault();
+                    const target = document.querySelector(a.getAttribute('href'));
+                    if (target) target.scrollIntoView({ behavior: 'smooth' });
+                });
+            });
+
+            /* ── Navbar scroll effect ─────────────────────────── */
+            window.addEventListener('scroll', () => {
+                document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
+            });
+
+            /* ── Chart.js Initialization & Interactivity ──────── */
+            Chart.defaults.color = '#9a9cb0';
+            Chart.defaults.font.family = "'Inter', sans-serif";
+
+            // 1. Sales Trend (Line Graph)
+            const salesCtx = document.getElementById('salesLineChart').getContext('2d');
+            const salesData = {
+                '7d': [120, 190, 150, 220, 180, 250, 210],
+                '30d': [1500, 1800, 2100, 1900, 2400, 2800, 2600, 3100, 2900, 3400, 3200, 3800], // simplified to 12 points
+                '1y': [15, 18, 22, 19, 24, 28, 26, 31, 29, 34, 38, 42] // monthly in K
+            };
+            const salesLabels = {
+                '7d': ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                '30d': ['1st', '3rd', '6th', '9th', '12th', '15th', '18th', '21st', '24th', '27th', '30th'],
+                '1y': ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+            };
+
+            let salesChart = new Chart(salesCtx, {
+                type: 'line',
+                data: {
+                    labels: salesLabels['30d'],
+                    datasets: [{
+                        label: 'Sales ($)',
+                        data: salesData['30d'],
+                        borderColor: '#764ba2',
+                        backgroundColor: 'rgba(118, 75, 162, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: '#f093fb',
+                        pointBorderColor: '#fff',
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: 'rgba(150,150,150,0.1)' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            // 2. Product Performance (Bar Chart)
+            const productCtx = document.getElementById('productBarChart').getContext('2d');
+            const productData = {
+                'weekly': [40, 65, 30, 85, 50],
+                'monthly': [180, 250, 120, 380, 210]
+            };
+
+            let productChart = new Chart(productCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['SaaS App', 'Consulting', 'E-book', 'Premium Plan', 'Add-ons'],
+                    datasets: [{
+                        label: 'Units Sold',
+                        data: productData['monthly'],
+                        backgroundColor: [
+                            'rgba(118, 75, 162, 0.8)',
+                            'rgba(102, 126, 234, 0.8)',
+                            'rgba(240, 147, 251, 0.8)',
+                            'rgba(33, 150, 243, 0.8)',
+                            'rgba(67, 160, 71, 0.8)'
+                        ],
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, grid: { color: 'rgba(150,150,150,0.1)' } }, x: { grid: { display: false } } }
+                }
+            });
+
+            // 3. Customer Sentiment (Pie Chart)
+            const sentimentCtx = document.getElementById('sentimentPieChart').getContext('2d');
+            let sentimentChart = new Chart(sentimentCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Positive', 'Neutral', 'Negative'],
+                    datasets: [{
+                        data: [65, 25, 10],
+                        backgroundColor: ['#28a745', '#ffc107', '#dc3545'],
+                        borderWidth: 0,
+                        hoverOffset: 8
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: { legend: { position: 'right' } }
+                }
+            });
+
+            // 4. User Engagement Heatmap (Simulated via Bubble Chart)
+            // X-axis = Hours of day, Y-axis = Days of week, R-axis = Engagement intensity
+            const heatmapCtx = document.getElementById('engagementHeatmap').getContext('2d');
+            const generateHeatmapData = () => {
+                const data = [];
+                for (let d = 0; d < 7; d++) {
+                    for (let h = 8; h < 20; h += 2) { // 8am to 8pm, 2hr intervals
+                        data.push({ x: h, y: d, r: Math.random() * 15 + 3 });
+                    }
+                }
+                return data;
+            };
+            let heatmapChart = new Chart(heatmapCtx, {
+                type: 'bubble',
+                data: {
+                    datasets: [{
+                        label: 'Engagement Intensity',
+                        data: generateHeatmapData(),
+                        backgroundColor: 'rgba(118, 75, 162, 0.6)',
+                        borderColor: '#764ba2',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => `Intensity: ${Math.round(ctx.raw.r)}` } } },
+                    scales: {
+                        x: { title: { display: true, text: 'Hour of Day (24h)' }, min: 6, max: 22, grid: { color: 'rgba(150,150,150,0.1)' } },
+                        y: { title: { display: true, text: 'Day of Week' }, ticks: { callback: val => ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][val] }, min: -1, max: 7, grid: { color: 'rgba(150,150,150,0.1)' } }
+                    }
+                }
+            });
+
+            // Handle Time Filter Clicks
+            document.querySelectorAll('.time-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    // Update active state
+                    const siblings = e.target.parentElement.querySelectorAll('.time-btn');
+                    siblings.forEach(s => s.classList.remove('active'));
+                    e.target.classList.add('active');
+
+                    // Update charts based on selections
+                    const chartId = e.target.dataset.chart;
+                    const range = e.target.dataset.range;
+
+                    if (chartId === 'sales') {
+                        salesChart.data.labels = salesLabels[range];
+                        salesChart.data.datasets[0].data = salesData[range];
+                        salesChart.update();
+                    } else if (chartId === 'product') {
+                        productChart.data.datasets[0].data = productData[range];
+                        productChart.update();
+                    } else if (chartId === 'heatmap') {
+                        heatmapChart.data.datasets[0].data = generateHeatmapData();
+                        heatmapChart.update();
+                    }
+                });
+            });
+
+        });
+    </script>
+</body>
+
+</html>
